@@ -12,20 +12,6 @@ class HttpProvider {
    */
   constructor(urlString) {
     this.url = url.parse(urlString);
-    this.apiUrl = null;
-    this.apiPrefix = null;
-  }
-
-  /**
-   * Configure the Api Service Provider.
-   * @param {string} urlString URL of the blockchain API. eg. http://api.n1.ecoc.io:port
-   * @param {string} apiPrefix the prefix of the api server /api /insigh-api eg. http://api.n1.ecoc.io:port/ecoc-api the prefix is /ecoc-api
-   */
-  apiConfig(urlString, apiPrefix) {
-    this.apiUrl = url.parse(urlString);
-    this.apiPrefix = apiPrefix;
-
-    return true;
   }
 
   /**
@@ -63,21 +49,6 @@ class HttpProvider {
     }
 
     return result;
-  }
-  async apiCall(uri) {
-    if (isEmpty(uri)) {
-      throw Error('uri cannot be empty.');
-    }
-    if (isEmpty(this.apiUrl)) {
-      throw Error('apiUrl need to be configured');
-    }
-
-    // Execute GET request
-    const response = await axios.get(`${this.apiUrl.protocol}//${this.apiUrl.host}${this.apiPrefix}${uri}`, { timeout: 5000 })
-      .catch((error) => {
-        throw Error(error);
-      });
-    return response.data;
   }
 }
 
