@@ -1,0 +1,12 @@
+{
+	"allowance"   :"dd62ed3e",
+	"approve"     :"095ea7b3",
+	"balanceOf"   :"70a08231",
+	"burn"        :"42966c68",
+	"decimals"    :"313ce567",
+	"name"        :"06fdde03",
+	"symbol"      :"95d89b41",
+	"totalSupply" :"18160ddd",
+	"transfer"    :"a9059cbb",
+	"transferFrom":"23b872dd"
+}

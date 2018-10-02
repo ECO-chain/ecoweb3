@@ -1,0 +1,82 @@
+{
+  "name": "ecoweb3",
+  "namespace": "ecoc",
+  "version": "1.1.0",
+  "description": "Ecochain JavaScript SDK",
+  "main": "./src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/ecoc/ecoweb3.git"
+  },
+  "license": "LGPL-3.0",
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": "9.3.0",
+    "npm": "5.5.1"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bignumber.js": "^7.2.1",
+    "bitcoinjs-lib": "^3.3.2",
+    "bn.js": "^4.11.8",
+    "bs58": "^4.0.1",
+    "chai": "^4.1.2",
+    "dotenv": "^6.0.0",
+    "ethjs-abi": "^0.2.1",
+    "js-beautify": "^1.8.1",
+    "lodash": "^4.17.10",
+    "safe-buffer": "^5.1.1",
+    "utf8": "^3.0.0",
+    "web3-utils": "^1.0.0-beta.26"
+  },
+  "devDependencies": {
+    "babel-eslint": "^9.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "husky": "^1.0.0-rc.13",
+    "lint-staged": "^7.2.0",
+    "mocha": "^5.2.0"
+  },
+  "scripts": {
+    "lint": "eslint -- src/. test/.",
+    "lint:fix": "eslint --fix -- src/. test/.",
+    "test": "mocha --recursive **/*.tests.js --no-timeouts",
+    "test:cleanenv": "mocha --recursive **/*.tests.js --cleanenv",
+    "precommit": "lint-staged",
+    "prepush": "npm run lint:fix"
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run lint:fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run lint:fix"
+    }
+  },
+  "homepage": "https://www.ecoc.io/",
+  "keywords": [
+    "ecochain",
+    "ecoc",
+    "javascript",
+    "jsonrpc"
+  ],
+  "author": "ecocchain dev team",
+  "authors": [
+    {
+      "name": "Akis",
+      "email": "akis@ecoc.io"
+    },
+    {
+      "name": "eagle",
+      "email": "bilal@ecoc.io"
+    }
+  ]
+}

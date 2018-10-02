@@ -1,0 +1,9 @@
+replace tests in folder test/ 
+check interaction with smart contracts
+
+edit files:
+ecocTests/general.tests.js
+ecocTests/contract.tests.js
+replace ABIs in README.md file with our smart contracts
+
+src/txs/* now include ecocjs-lib functions
