@@ -13,7 +13,7 @@ class Utils {
    */
   static paramsCheck(methodName, params, required, validators) {
     if (_.isUndefined(params)) {
-      throw new Error(`params is undefined in params of ${methodName}; expected: ${_.isEmpty(required)
+      throw new Error(`params is undefined in params of ${methodName} expected: ${_.isEmpty(required)
         ? undefined : required.join(',')}`);
     }
 
@@ -42,10 +42,10 @@ class Utils {
         }
 
         // Run validator funcs and check result
-        // If result === 'undefined', pass; otherwise throw error with message
+        // If result === 'undefined', pass otherwise throw error with message
         const error = validFunc(params[key], key);
         if (error instanceof Error) {
-          throw new Error(`validation for ${key} failed; message:${error.message}`);
+          throw new Error(`validation for ${key} failed message:${error.message}`);
         }
       });
     }
@@ -99,7 +99,7 @@ class Utils {
     }
 
     let str = '';
-    for (; i < hex.length; i += 2) {
+    for (;i < hex.length; i += 2) {
       const code = parseInt(hex.substr(i, 2), 16);
       if (code === 0) { break; }
       str += String.fromCharCode(code);
