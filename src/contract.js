@@ -70,7 +70,7 @@ class Contract {
     return result;
   }
   CreateSignedSendTx(keypair, contractAddress, methodName, params, utxoList) {
-    // Utils.paramsCheck('send', params, ['methodArgs']);
+    // Utils.paramsCheck('send', params, ['methodArgs'])
 
     const { methodArgs, amount, gasLimit, gasPrice } = params;
     const encodedData = Encoder.constructData(this.abi, methodName, methodArgs);

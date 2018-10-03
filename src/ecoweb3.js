@@ -1,8 +1,9 @@
 const _ = require('lodash');
 
-const { initProvider } = require('./providers');
+const { initProvider, initApiProvider } = require('./providers');
 const Contract = require('./contract');
 const HttpProvider = require('./providers/http-provider');
+const ApiProvider = require('./providers/api-provider');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
 const ErcToken = require('./erctoken/erc-token');
@@ -439,6 +440,7 @@ class Ecoweb3 {
     return this.provider.rawCall('walletpassphrasechange', [oldPassphrase, newPassphrase]);
   }
 
+
   /**
    * ERC-20 Token Contract Implementation
    */
@@ -447,17 +449,21 @@ class Ecoweb3 {
   }
 
   /**
-  * the API service's method need to configure api
+  * the API service's method needed to configure api
   */
 
   // Configure the Api service provider
-  apiProvider(urlString, apiPrefix) {
-    return this.provider.apiConfig(urlString, apiPrefix);
+  ApiProvider(urlString, apiPrefix) {
+    return new ApiProvider(urlString, apiPrefix);
+  }
+
+  ApiConfig(provider, apiPrefix) {
+    this.apiProvider = initApiProvider(provider, apiPrefix);
   }
 
   async isApiConnected() {
     try {
-      const res = await this.provider.apiCall('/sync');
+      const res = await this.apiProvider.Get('/sync');
       return typeof res === 'object';
     } catch (err) {
       return false;
@@ -465,7 +471,7 @@ class Ecoweb3 {
   }
 
   getUtxoList(address) {
-    return this.provider.apiCall(`/addrs/${address}/utxo`);
+    return this.apiProvider.Get(`/addrs/${address}/utxo`);
   }
 }
 

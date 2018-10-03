@@ -1,8 +1,8 @@
 const ercAbi = require('./erc-token-abi.json');
-// const ecocjs = require('../txs');
+// const ecocjs = require('../txs')
 const Contract = require('../contract');
-// const Encoder = require('../formatters/encoder');
-// const Decoder = require('../formatters/decoder');
+// const Encoder = require('../formatters/encoder')
+// const Decoder = require('../formatters/decoder')
 
 class ErcToken {
   constructor(provider, contractAddress) {
