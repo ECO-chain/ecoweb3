@@ -26,20 +26,67 @@ class ErcToken {
     return tokenInfo;
   }
 
-  allowance() {
-    return true;
+  approve(spender, amount, account) {
+    const { keypair, utxoList } = account;
+    const senderAddress = keypair.getAddress();
+    const params = {
+      methodArgs: [spender, amount],
+      senderAddress,
+    };
+
+    const contractTx = this.contract.CreateSignedSendTx(
+      keypair,
+      this.contract.address,
+      'approve',
+      params,
+      utxoList,
+    );
+    return this.provider.rawCall('sendrawtransaction', [contractTx]);
   }
 
-  approve() {
-    return true;
+  transfer(to, amount, account) {
+    const { keypair, utxoList } = account;
+    const senderAddress = keypair.getAddress();
+    const params = {
+      methodArgs: [to, amount],
+      senderAddress,
+    };
+
+    const contractTx = this.contract.CreateSignedSendTx(
+      keypair,
+      this.contract.address,
+      'transfer',
+      params,
+      utxoList,
+    );
+    return this.provider.rawCall('sendrawtransaction', [contractTx]);
   }
 
-  transfer(keypair, toAddress, amount) {
-    return [true, keypair, toAddress, amount];
+  transferFrom(from, to, amount, account) {
+    const { keypair, utxoList } = account;
+    const senderAddress = keypair.getAddress();
+    const params = {
+      methodArgs: [from, to, amount],
+      senderAddress,
+    };
+
+    const contractTx = this.contract.CreateSignedSendTx(
+      keypair,
+      this.contract.address,
+      'transferFrom',
+      params,
+      utxoList,
+    );
+    return this.provider.rawCall('sendrawtransaction', [contractTx]);
   }
 
-  transferFrom() {
-    return true;
+  allowance(tokenOwner, spender) {
+    const param = {
+      methodArgs: [tokenOwner, spender],
+      senderAddress: '',
+    };
+
+    return this.contract.call('allowance', param).then(res => res.executionResult.formattedOutput.balance.toString(10));
   }
 
   balanceOf(address) {

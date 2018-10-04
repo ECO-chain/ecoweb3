@@ -19,6 +19,9 @@ class Contract {
     this.provider = initProvider(provider);
     this.address = Utils.trimHexPrefix(address);
     this.abi = abi;
+    this.amount = DEFAULT_AMOUNT;
+    this.gasLimit = DEFAULT_GAS_LIMIT;
+    this.gasPrice = DEFAULT_GAS_PRICE;
   }
 
   /**
@@ -47,9 +50,9 @@ class Contract {
 
     const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
     const data = Encoder.constructData(this.abi, methodName, methodArgs);
-    const amt = amount || DEFAULT_AMOUNT;
-    const limit = gasLimit || DEFAULT_GAS_LIMIT;
-    const price = gasPrice || DEFAULT_GAS_PRICE;
+    const amt = amount || this.amount;
+    const limit = gasLimit || this.gasLimit;
+    const price = gasPrice || this.gasPrice;
 
     const result = await this.provider.rawCall('sendtocontract', [
       this.address,
@@ -74,9 +77,9 @@ class Contract {
 
     const { methodArgs, amount, gasLimit, gasPrice } = params;
     const encodedData = Encoder.constructData(this.abi, methodName, methodArgs);
-    const amt = amount || DEFAULT_AMOUNT;
-    const limit = gasLimit || DEFAULT_GAS_LIMIT;
-    const price = gasPrice || DEFAULT_GAS_PRICE;
+    const amt = amount || this.amount;
+    const limit = gasLimit || this.gasLimit;
+    const price = gasPrice || this.gasPrice;
 
     const tx = Ecoctx.utils.buildSendToContractTransaction(keypair, contractAddress, encodedData, limit, price * 1e8, amt, utxoList);
 
