@@ -8,7 +8,7 @@ const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
 const ErcToken = require('./erctoken/erc-token');
 const Utils = require('./utils');
-const ecocjs = require('./txs');
+const ecocjs = require('./ecocjs');
 
 class Ecoweb3 {
   /**
@@ -22,6 +22,8 @@ class Ecoweb3 {
     this.utils = Utils;
     this.Network = network;
     this.ECPair = ecocjs.ECPair;
+    this.txs = ecocjs.txs;
+    this.script = ecocjs.script;
   }
 
   /**
@@ -32,6 +34,10 @@ class Ecoweb3 {
    */
   Contract(address, abi) {
     return new Contract(this.provider, address, abi);
+  }
+
+  TxBuilder() {
+    return new ecocjs.TransactionBuilder(this.getNetwork());
   }
 
   /**
