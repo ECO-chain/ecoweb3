@@ -2,7 +2,7 @@ const { initProvider } = require('./providers');
 const Utils = require('./utils');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
-const Ecoctx = require('./txs');
+const Ecoctx = require('./ecocjs/utils');
 
 const DEFAULT_AMOUNT = 0;
 const DEFAULT_GAS_LIMIT = 250000;

@@ -206,6 +206,7 @@ function buildSendToContractTransaction(keyPair, contractAddress, encodedData, g
   return tx.build().toHex();
 }
 
+
 module.exports = {
   selectTxs,
   buildPubKeyHashTransaction,

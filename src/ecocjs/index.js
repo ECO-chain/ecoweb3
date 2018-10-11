@@ -2,6 +2,6 @@ const ecocjs = require('bitcoinjs-lib');
 
 Object.assign(ecocjs.networks, require('./networks'));
 
-ecocjs.utils = require('./utils');
+ecocjs.txs = require('./utils');
 
 module.exports = ecocjs;
