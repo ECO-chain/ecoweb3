@@ -40,6 +40,14 @@ class Ecoweb3 {
     return new ecocjs.TransactionBuilder(this.getNetwork());
   }
 
+  TxFromHex(rawtx) {
+    return ecocjs.Transaction.fromHex(rawtx);
+  }
+
+  TxFromBuffer(rawtx) {
+    return ecocjs.Transaction.fromBuffer(rawtx);
+  }
+
   /**
    * Constructs a new HttpProvider instance.
    * @param {string} urlString URL of the blockchain API. eg. http://username:password@the.no.de.ip:port
