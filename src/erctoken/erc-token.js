@@ -11,7 +11,15 @@ class ErcToken {
     this.contract = new Contract(this.provider, this.tokenAddress, ercAbi);
   }
 
+  async isErcToken() {
+    return await this.totalSupply() !== '0';
+  }
+
   async findInfo() {
+    if (await this.isErcToken() === false) {
+      throw Error('This is no ERC-20 Token');
+    }
+
     this.tokenName = await this.name();
     this.tokenSymbol = await this.symbol();
     this.tokenDecimals = await this.decimals();
