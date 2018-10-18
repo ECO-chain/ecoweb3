@@ -1,8 +1,5 @@
 const ercAbi = require('./erc-token-abi.json');
-// const ecocjs = require('../txs')
 const Contract = require('../contract');
-// const Encoder = require('../formatters/encoder')
-// const Decoder = require('../formatters/decoder')
 
 class ErcToken {
   constructor(provider, contractAddress) {
@@ -11,7 +8,15 @@ class ErcToken {
     this.contract = new Contract(this.provider, this.tokenAddress, ercAbi);
   }
 
+  async isErcToken() {
+    return await this.totalSupply() !== '0';
+  }
+
   async findInfo() {
+    if (await this.isErcToken() === false) {
+      throw Error('This is not ERC-20 Token');
+    }
+
     this.tokenName = await this.name();
     this.tokenSymbol = await this.symbol();
     this.tokenDecimals = await this.decimals();
@@ -34,7 +39,7 @@ class ErcToken {
       senderAddress,
     };
 
-    const contractTx = this.contract.CreateSignedSendTx(
+    const contractTx = this.contract.CreateSignedSendToTx(
       keypair,
       this.contract.address,
       'approve',
@@ -52,7 +57,7 @@ class ErcToken {
       senderAddress,
     };
 
-    const contractTx = this.contract.CreateSignedSendTx(
+    const contractTx = this.contract.CreateSignedSendToTx(
       keypair,
       this.contract.address,
       'transfer',
@@ -70,7 +75,7 @@ class ErcToken {
       senderAddress,
     };
 
-    const contractTx = this.contract.CreateSignedSendTx(
+    const contractTx = this.contract.CreateSignedSendToTx(
       keypair,
       this.contract.address,
       'transferFrom',
@@ -86,7 +91,7 @@ class ErcToken {
       senderAddress: '',
     };
 
-    return this.contract.call('allowance', param).then(res => res.executionResult.formattedOutput.balance.toString(10));
+    return this.contract.call('allowance', param).then(res => res.executionResult.formattedOutput.amount.toString(10));
   }
 
   balanceOf(address) {

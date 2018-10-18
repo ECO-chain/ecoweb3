@@ -176,7 +176,7 @@
 		"name": "allowance",
 		"outputs": [
 			{
-				"name": "",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],

@@ -2,7 +2,7 @@ const { initProvider } = require('./providers');
 const Utils = require('./utils');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
-const Ecoctx = require('./ecocjs/utils');
+const Txs = require('./ecocjs/utils');
 
 const DEFAULT_AMOUNT = 0;
 const DEFAULT_GAS_LIMIT = 250000;
@@ -72,7 +72,8 @@ class Contract {
     };
     return result;
   }
-  CreateSignedSendTx(keypair, contractAddress, methodName, params, utxoList) {
+
+  CreateSignedSendToTx(keypair, contractAddress, methodName, params, utxoList) {
     // Utils.paramsCheck('send', params, ['methodArgs'])
 
     const { methodArgs, amount, gasLimit, gasPrice } = params;
@@ -81,7 +82,7 @@ class Contract {
     const limit = gasLimit || this.gasLimit;
     const price = gasPrice || this.gasPrice;
 
-    const tx = Ecoctx.utils.buildSendToContractTransaction(keypair, contractAddress, encodedData, limit, price * 1e8, amt, utxoList);
+    const tx = Txs.buildSendToContractTransaction(keypair, contractAddress, encodedData, limit, price * 1e8, amt, utxoList);
 
     return tx;
   }
