@@ -81,6 +81,7 @@ class Ecoweb3 {
   getNetwork() {
     return (this.Network === 'Mainnet') ? ecocjs.networks.ecoc : ecocjs.networks.ecoc_testnet;
   }
+
   getBlock(blockHash, verbose = true) {
     return this.provider.rawCall('getblock', [blockHash, verbose]);
   }
@@ -368,8 +369,8 @@ class Ecoweb3 {
    * Lists unspent transaction outputs.
    * @return {Promise} Array of unspent transaction outputs or Error
    */
-  listUnspent() {
-    return this.provider.rawCall('listunspent');
+  listUnspent(address = [], minconf = 1, maxconf = 9999999) {
+    return this.provider.rawCall('listunspent', [minconf, maxconf, address]);
   }
 
   /**
@@ -410,6 +411,10 @@ class Ecoweb3 {
       senderAddress,
       changeToSender,
     ]);
+  }
+
+  sendMany(addrList, fromAccount = '') {
+    return this.provider.rawCall('sendmany', [fromAccount, addrList]);
   }
 
   /**
