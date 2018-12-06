@@ -8,12 +8,10 @@ const { isEmpty } = require('lodash');
 class ApiProvider {
   /**
   * Configure the Api Service Provider.
-  * @param {string} urlString URL of the blockchain API. eg. http://api.n1.ecoc.io:port
-  * @param {string} apiPrefix the prefix of the api server /api /insigh-api eg. http://api.n1.ecoc.io:port/ecoc-api the prefix is /ecoc-api
+  * @param {string} urlString URL of the blockchain API. eg. http://api.n1.ecoc.io:port/api_prefix
   */
   constructor(urlString, apiPrefix) {
     this.apiUrl = url.parse(urlString);
-    this.apiPrefix = apiPrefix;
   }
 
   /**
@@ -21,7 +19,7 @@ class ApiProvider {
    * @param {string} resource A resource object of RESTful API.
    */
 
-  async Get(resource) {
+  async get(resource) {
     if (isEmpty(resource)) {
       throw Error('resource cannot be empty.');
     }
@@ -31,7 +29,7 @@ class ApiProvider {
     }
 
     // Execute GET request
-    const response = await axios.get(`${this.apiUrl.protocol}//${this.apiUrl.host}${this.apiPrefix}${resource}`, { timeout: 5000 })
+    const response = await axios.get(`${this.apiUrl.href.replace(/([^:]\/)\/+/g, '')}${resource}`, { timeout: 5000 })
       .catch((error) => {
         throw Error(error);
       });

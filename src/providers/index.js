@@ -1,46 +1,45 @@
 const { includes } = require('lodash');
 
-const HttpProvider = require('./http-provider');
+const RpcProvider = require('./rpc-provider');
 const ApiProvider = require('./api-provider');
 
 const compatibleProviders = [
-  'HttpProvider',
+  'RpcProvider',
   'ApiProvider',
 ];
 
-const initProvider = (provider) => {
+const initRPC = (provider) => {
   if (!provider) {
     throw Error('Provider cannot be undefined.');
   }
 
   if (typeof provider === 'string') {
-    return new HttpProvider(provider);
+    return new RpcProvider(provider);
   }
 
   const className = provider.constructor.name;
   if (!includes(compatibleProviders, className)) {
-    throw Error(`Incompatible provider: ${className}`);
+    throw Error(`Incompatible RPC provider: ${className}`);
   }
 
   return provider;
 };
 
-const initApiProvider = (provider, prefix) => {
+const initAPI = (provider) => {
   if (!provider) {
     throw Error('Provider cannot be undefined.');
   }
-  const apiPrefix = (prefix === undefined) ? '/api' : prefix;
 
   if (typeof provider === 'string') {
-    return new ApiProvider(provider, apiPrefix);
+    return new ApiProvider(provider);
   }
 
   const className = provider.constructor.name;
   if (!includes(compatibleProviders, className)) {
-    throw Error(`Incompatible provider: ${className}`);
+    throw Error(`Incompatible API provider: ${className}`);
   }
 
   return provider;
 };
 
-module.exports = { initProvider, initApiProvider };
+module.exports = { initRPC, initAPI };
