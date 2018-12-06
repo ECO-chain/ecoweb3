@@ -83,11 +83,11 @@ class Ecoweb3 {
   }
 
   static Tx (networkStr) {
-    return new Tx(getNetwork(network)(networkStr));
+    return new Tx(getNetwork(networkStr));
   }
 
   static Account (networkStr) {
-    return new Account(getNetwork(network)(networkStr));
+    return new Account(getNetwork(networkStr));
   }
 }
 
