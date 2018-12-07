@@ -32,7 +32,6 @@ class Ecoweb3 {
     if (apiProvider) {
       this.api = new Api(apiProvider);
     }
-    console.log(rpcProvider, apiProvider, networkStr);
     this.network = getNetwork(networkStr);
     this.tx = new Tx(this.network);
     this.account = new Account(this.network);

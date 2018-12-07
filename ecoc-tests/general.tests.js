@@ -20,13 +20,13 @@ describe('Ecoweb3', () => {
   let ecoweb3;
 
   beforeEach(() => {
-    ecoweb3 = new Ecoweb3(getEcocRPCAddress());
+    ecoweb3 = new Ecoweb3({ rpcProvider: getEcocRPCAddress() });
   });
 
   /** ******** MISC ********* */
   describe('isConnected()', () => {
     it('returns true when connected', async () => {
-      assert.isTrue(await ecoweb3.isConnected());
+      assert.isTrue(await ecoweb3.rpc.isConnected());
     });
   });
 
@@ -86,7 +86,7 @@ describe('Ecoweb3', () => {
 
   describe('getBlockchainInfo()', () => {
     it('returns the block info', async () => {
-      const res = await ecoweb3.getBlockchainInfo();
+      const res = await ecoweb3.rpc.getBlockchainInfo();
       assert.isDefined(res);
       assert.isObject(res);
       assert.isDefined(res.chain);
@@ -105,7 +105,7 @@ describe('Ecoweb3', () => {
 
   describe('getBlockCount()', () => {
     it('returns the blockcount', async () => {
-      const res = await ecoweb3.getBlockCount();
+      const res = await ecoweb3.rpc.getBlockCount();
       assert.isDefined(res);
       assert.isNumber(res);
     });
@@ -113,7 +113,7 @@ describe('Ecoweb3', () => {
 
   describe('getBlockHash()', () => {
     it('returns the block hash', async () => {
-      const res = await ecoweb3.getBlockHash(0);
+      const res = await ecoweb3.rpc.getBlockHash(0);
       assert.isDefined(res);
       assert.isString(res);
     });
@@ -161,7 +161,7 @@ describe('Ecoweb3', () => {
 
   describe('listContracts()', () => {
     it('returns the array of deployed contracts', async () => {
-      const res = await ecoweb3.listContracts();
+      const res = await ecoweb3.rpc.listContracts();
       assert.isDefined(res);
       assert.isObject(res);
     });
@@ -205,38 +205,38 @@ describe('Ecoweb3', () => {
     });
 
     it('throws if fromBlock is not a number', async () => {
-      assert.throws(() => ecoweb3.searchLogs(
+      assert.throws(() => ecoweb3.rpc.searchLogs(
         'a', 50100, [],
         ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true,
       ), Error);
     });
 
     it('throws if toBlock is not a number', async () => {
-      assert.throws(() => ecoweb3.searchLogs(
+      assert.throws(() => ecoweb3.rpc.searchLogs(
         50000, 'a', [],
         ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true,
       ), Error);
     });
 
     it('throws if addresses is not a string or array', async () => {
-      assert.throws(() => ecoweb3.searchLogs(
+      assert.throws(() => ecoweb3.rpc.searchLogs(
         50000, 50100, undefined,
         ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true,
       ), Error);
 
-      assert.throws(() => ecoweb3.searchLogs(
+      assert.throws(() => ecoweb3.rpc.searchLogs(
         50000, 50100, 1,
         ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true,
       ), Error);
     });
 
     it('throws if topics is not a string or array', async () => {
-      assert.throws(() => ecoweb3.searchLogs(
+      assert.throws(() => ecoweb3.rpc.searchLogs(
         50000, 50100, undefined,
         ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true,
       ), Error);
 
-      assert.throws(() => ecoweb3.searchLogs(
+      assert.throws(() => ecoweb3.rpc.searchLogs(
         50000, 50100, 1,
         ['c46e722c8158268af789d6a68206785f8d497869da236f87c2014c1c08fd3dec'], ContractMetadata, true,
       ), Error);
@@ -246,7 +246,7 @@ describe('Ecoweb3', () => {
   /** ******** CONTROL ********* */
   describe('getInfo()', () => {
     it('returns the blockchain info', async () => {
-      const res = await ecoweb3.getInfo(ECOC_ADDRESS);
+      const res = await ecoweb3.rpc.getInfo(ECOC_ADDRESS);
       assert.isDefined(res);
       assert.isObject(res);
       assert.isDefined(res.version);
@@ -272,7 +272,7 @@ describe('Ecoweb3', () => {
   /** ******** NETWORK ********* */
   describe('getPeerInfo()', () => {
     it('returns the Node info', async () => {
-      const res = await ecoweb3.getPeerInfo();
+      const res = await ecoweb3.rpc.getPeerInfo();
       assert.isDefined(res);
       assert.isArray(res);
       _.forEach(res, (nodeInfo) => {
@@ -286,7 +286,7 @@ describe('Ecoweb3', () => {
   describe('getHexAddress()', () => {
     it('returns the hex address', async () => {
       const hexDecodedAddress = bs58.decode(ECOC_ADDRESS).toString('hex');
-      const hexadecimalAddress = await ecoweb3.getHexAddress(ECOC_ADDRESS);
+      const hexadecimalAddress = await ecoweb3.rpc.getHexAddress(ECOC_ADDRESS);
       assert.isString(hexadecimalAddress);
       assert.lengthOf(hexadecimalAddress, 40);
       assert.include(hexDecodedAddress, hexadecimalAddress);
@@ -295,7 +295,7 @@ describe('Ecoweb3', () => {
 
   describe('fromHexAddress()', () => {
     it('returns the ecochain address', async () => {
-      const ecocAddress = await ecoweb3.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3');
+      const ecocAddress = await ecoweb3.rpc.fromHexAddress('17e7888aa7412a735f336d2f6d784caefabb6fa3');
       assert.isString(ecocAddress);
       assert.lengthOf(ecocAddress, 34);
     });
@@ -304,11 +304,11 @@ describe('Ecoweb3', () => {
   /** ******** UTIL ********* */
   describe('validateAddress()', () => {
     it('returns an object validating the address', async () => {
-      let res = await ecoweb3.validateAddress(ECOC_ADDRESS);
+      let res = await ecoweb3.rpc.validateAddress(ECOC_ADDRESS);
       assert.isDefined(res);
       assert.isDefined(res.isvalid);
 
-      res = await ecoweb3.validateAddress('helloworld');
+      res = await ecoweb3.rpc.validateAddress('helloworld');
       assert.isDefined(res);
       assert.isDefined(res.isvalid);
     });
@@ -317,19 +317,19 @@ describe('Ecoweb3', () => {
   /** ******** WALLET ********* */
   describe('dumpPrivateKey()', () => {
     it('returns the private key', async () => {
-      const address = await ecoweb3.getAccountAddress('');
+      const address = await ecoweb3.rpc.getAccountAddress('');
       if (await isWalletEncrypted(ecoweb3)) {
-        await ecoweb3.walletPassphrase(getWalletPassphrase(), 3600);
-        assert.isTrue((await ecoweb3.getWalletInfo()).unlocked_until > 0);
+        await ecoweb3.rpc.walletPassphrase(getWalletPassphrase(), 3600);
+        assert.isTrue((await ecoweb3.rpc.getWalletInfo()).unlocked_until > 0);
 
-        const res = await ecoweb3.dumpPrivateKey(address);
+        const res = await ecoweb3.rpc.dumpPrivateKey(address);
         assert.isDefined(res);
         assert.isString(res);
 
-        await ecoweb3.walletLock();
-        assert.isTrue((await ecoweb3.getWalletInfo()).unlocked_until === 0);
+        await ecoweb3.rpc.walletLock();
+        assert.isTrue((await ecoweb3.rpc.getWalletInfo()).unlocked_until === 0);
       } else {
-        const res = await ecoweb3.dumpPrivateKey(address);
+        const res = await ecoweb3.rpc.dumpPrivateKey(address);
         assert.isDefined(res);
         assert.isString(res);
       }
@@ -338,7 +338,7 @@ describe('Ecoweb3', () => {
 
   describe('getAccountAddress()', () => {
     it('returns the account address', async () => {
-      const res = await ecoweb3.getAccountAddress('');
+      const res = await ecoweb3.rpc.getAccountAddress('');
       assert.isDefined(res);
       assert.isString(res);
       assert.isTrue(res.startsWith('e') || res.startsWith('E'));
@@ -347,7 +347,7 @@ describe('Ecoweb3', () => {
 
   describe('getAddressesByAccount()', () => {
     it('returns the account address array', async () => {
-      const res = await ecoweb3.getAddressesByAccount('');
+      const res = await ecoweb3.rpc.getAddressesByAccount('');
       assert.isDefined(res);
       assert.isArray(res);
       assert.isTrue(_.every(res, item => item.startsWith('e') || item.startsWith('E')));
@@ -417,7 +417,7 @@ describe('Ecoweb3', () => {
 
   describe('getWalletInfo()', () => {
     it('returns the wallet info', async () => {
-      const res = await ecoweb3.getWalletInfo();
+      const res = await ecoweb3.rpc.getWalletInfo();
       assert.isDefined(res);
       assert.isDefined(res.walletversion);
       assert.isDefined(res.balance);
@@ -434,7 +434,7 @@ describe('Ecoweb3', () => {
 
   describe('getUnconfirmedBalance()', () => {
     it('returns the unconfirmed balance', async () => {
-      const res = await ecoweb3.getUnconfirmedBalance();
+      const res = await ecoweb3.rpc.getUnconfirmedBalance();
       assert.isDefined(res);
       assert.isNumber(res);
     });
@@ -442,7 +442,7 @@ describe('Ecoweb3', () => {
 
   describe('listAddressGroupings()', () => {
     it('returns an array of address groupings', async () => {
-      const res = await ecoweb3.listAddressGroupings();
+      const res = await ecoweb3.rpc.listAddressGroupings();
       assert.isDefined(res);
       assert.isArray(res);
 
@@ -461,7 +461,7 @@ describe('Ecoweb3', () => {
 
   describe('listLockUnspent()', () => {
     it('returns an array of unspendable outputs', async () => {
-      const res = await ecoweb3.listLockUnspent();
+      const res = await ecoweb3.rpc.listLockUnspent();
       assert.isDefined(res);
       assert.isArray(res);
     });
@@ -469,7 +469,7 @@ describe('Ecoweb3', () => {
 
   describe('listUnspent()', () => {
     it('returns an unspent output array', async () => {
-      const res = await ecoweb3.listUnspent();
+      const res = await ecoweb3.rpc.listUnspent();
       assert.isDefined(res);
       assert.isArray(res);
     });
@@ -478,11 +478,11 @@ describe('Ecoweb3', () => {
   describe('walletLock()', () => {
     it('locks the encrypted wallet', async () => {
       if (await isWalletEncrypted(ecoweb3)) {
-        await ecoweb3.walletPassphrase(getWalletPassphrase(), 3600, true);
-        assert.isTrue((await ecoweb3.getWalletInfo()).unlocked_until > 0);
+        await ecoweb3.rpc.walletPassphrase(getWalletPassphrase(), 3600, true);
+        assert.isTrue((await ecoweb3.rpc.getWalletInfo()).unlocked_until > 0);
 
-        await ecoweb3.walletLock();
-        assert.isTrue((await ecoweb3.getWalletInfo()).unlocked_until === 0);
+        await ecoweb3.rpc.walletLock();
+        assert.isTrue((await ecoweb3.rpc.getWalletInfo()).unlocked_until === 0);
       } else {
         assert.isTrue(true);
       }
@@ -492,11 +492,11 @@ describe('Ecoweb3', () => {
   describe('walletPassphrase()', () => {
     it('unlocks the encrypted wallet', async () => {
       if (await isWalletEncrypted(ecoweb3)) {
-        await ecoweb3.walletLock();
-        assert.isTrue((await ecoweb3.getWalletInfo()).unlocked_until === 0);
+        await ecoweb3.rpc.walletLock();
+        assert.isTrue((await ecoweb3.rpc.getWalletInfo()).unlocked_until === 0);
 
-        await ecoweb3.walletPassphrase(getWalletPassphrase(), 3600, true);
-        assert.isTrue((await ecoweb3.getWalletInfo()).unlocked_until > 0);
+        await ecoweb3.rpc.walletPassphrase(getWalletPassphrase(), 3600, true);
+        assert.isTrue((await ecoweb3.rpc.getWalletInfo()).unlocked_until > 0);
       } else {
         assert.isTrue(true);
       }
@@ -508,7 +508,7 @@ describe('Ecoweb3', () => {
   !_.includes(process.argv, '--cleanenv') ? describe.skip : describe('cleanEnv tests', () => {
     describe('getNewAddress()', () => {
       it('returns a new ecochain address', async () => {
-        const res = await ecoweb3.getNewAddress('');
+        const res = await ecoweb3.rpc.getNewAddress('');
         assert.isDefined(res);
         assert.isString(res);
         assert.isTrue(res.startsWith('e') || res.startsWith('E'));
@@ -517,7 +517,7 @@ describe('Ecoweb3', () => {
 
     describe('backupWallet()', () => {
       it('backup the wallet', async () => {
-        const res = await ecoweb3.backupWallet(path.join(__dirname, '../../test/data/backup.dat'));
+        const res = await ecoweb3.rpc.backupWallet(path.join(__dirname, '../../test/data/backup.dat'));
         assert.notTypeOf(res, 'Error');
       });
     });
@@ -525,7 +525,7 @@ describe('Ecoweb3', () => {
     describe('importWallet()', () => {
       it('throw an error if importing a non-existent file', async () => {
         try {
-          await ecoweb3.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
+          await ecoweb3.rpc.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
         } catch (err) {
           assert.isDefined(err);
           assert.equal(err, 'Error: Cannot open wallet dump file');
@@ -533,7 +533,7 @@ describe('Ecoweb3', () => {
       });
 
       it('import the wallet from a wallet dump file', async () => {
-        const res = await ecoweb3.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
+        const res = await ecoweb3.rpc.importWallet(path.join(__dirname, '../../test/data/backup.dat'));
         assert.notTypeOf(res, 'Error');
       });
     });

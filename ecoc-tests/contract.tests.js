@@ -21,7 +21,10 @@ describe('Contract', () => {
         ContractMetadata.SimpleContract.address,
         ContractMetadata.SimpleContract.abi,
       );
-      assert.isDefined(contract.provider);
+      assert.isDefined(contract.rpcProvider);
+      assert.isDefined(contract.amount);
+      assert.isDefined(contract.gasLimit);
+      assert.isDefined(contract.gasPrice);
       assert.equal(contract.address, ContractMetadata.SimpleContract.address);
       assert.equal(contract.abi, ContractMetadata.SimpleContract.abi);
     });

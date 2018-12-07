@@ -87,7 +87,7 @@ class RPC {
    * @param  {bool} removeHexPrefix Flag to indicate whether to remove the hex prefix (0x) from hex values
    * @return {Promise} Promise containing returned logs or Error
    */
-  async searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix) {
+  searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, removeHexPrefix) {
     if (!_.isNumber(fromBlock)) {
       throw new Error(`fromBlock expects a number. Got ${fromBlock} instead.`);
     }

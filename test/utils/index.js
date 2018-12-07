@@ -30,7 +30,7 @@ module.exports = {
   getWalletPassphrase: () => (process.env.WALLET_PASSPHRASE ? String(Buffer.from(process.env.WALLET_PASSPHRASE)) : ''),
 
   isWalletEncrypted: async (ecocw3) => {
-    const res = await ecocw3.getWalletInfo();
+    const res = await ecocw3.rpc.getWalletInfo();
     return Object.prototype.hasOwnProperty.call(res, 'unlocked_until');
   },
 };

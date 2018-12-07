@@ -2,7 +2,8 @@ require('dotenv').config({ path: '../.env' });
 
 const Ecoweb3 = require('../src/ecoweb3');
 
-const ecocw3 = new Ecoweb3(process.env.NODE_RPC);
+const config = { rpcProvider: process.env.NODE_RPC };
+const ecocw3 = new Ecoweb3(config);
 const unhandledRejections = new Map();
 
 process.on('unhandledRejection', (reason, promise) => {
@@ -13,20 +14,20 @@ process.on('rejectionHandled', (promise) => {
 });
 
 async function isConnected() {
-  return ecocw3.isConnected();
+  return ecocw3.rpc.isConnected();
 }
 
 async function fromHexAddress() {
-  return ecocw3.fromHexAddress('4c6db75320e90d3b1e01c6265da17b2a9ca18a1a');
+  return ecocw3.rpc.fromHexAddress('4c6db75320e90d3b1e01c6265da17b2a9ca18a1a');
 }
 
 async function getHexAddress() {
-  return ecocw3.getHexAddress('e94cNn97bstf7tALWR5YhAFEcQTyJ9LGYF');
+  return ecocw3.rpc.getHexAddress('e94cNn97bstf7tALWR5YhAFEcQTyJ9LGYF');
 }
 
 
 async function getBlockCount() {
-  return ecocw3.getBlockCount();
+  return ecocw3.rpc.getBlockCount();
 }
 
 isConnected().then((res) => {
