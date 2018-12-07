@@ -9,29 +9,33 @@ const Account = require('./account');
 const Utils = require('./utils');
 const ecocjs = require('./ecocjs');
 
-const ecocMainnet = ecocjs.networks.ecoc
-const ecocTestnet = ecocjs.networks.ecoc_testnet
+const ecocMainnet = ecocjs.networks.ecoc;
+const ecocTestnet = ecocjs.networks.ecoc_testnet;
 
-const getNetwork = (networkStr) => {
-  return (networkStr === 'Mainnet') ? ecocMainnet : ecocTestnet;
-}
+const getNetwork = networkStr => ((networkStr === 'Testnet') ? ecocTestnet : ecocMainnet);
 
 class Ecoweb3 {
   /**
    * Ecoweb3 constructor.
-   * @param {string|Ecoweb3Provider} provider Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
+   * @param {string|Ecoweb3Provider} config Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
    */
-  constructor(RpcProvider=null, ApiProvider=null, networkStr = 'Mainnet') {
-    console.log(networkStr)
-    if (RpcProvider) {
-      this.rpc = new Rpc(RpcProvider);
+  constructor(config = {
+    rpcProvider: null,
+    apiProvider: null,
+    networkStr: null,
+  }) {
+    const { rpcProvider, apiProvider, networkStr } = config;
+
+    if (rpcProvider) {
+      this.rpc = new Rpc(rpcProvider);
     }
-    if (ApiProvider) {
-      this.api = new Api(ApiProvider);
+    if (apiProvider) {
+      this.api = new Api(apiProvider);
     }
-    this.network =  getNetwork(networkStr)
+    console.log(rpcProvider, apiProvider, networkStr);
+    this.network = getNetwork(networkStr);
     this.tx = new Tx(this.network);
-    this.account = new Account(this.network)
+    this.account = new Account(this.network);
     this.encoder = Encoder;
     this.decoder = Decoder;
     this.utils = Utils;
@@ -47,9 +51,8 @@ class Ecoweb3 {
     if (this.rpc) {
       return new Contract(this.rpc.provider, address, abi);
     }
-    else {
-      throw Error('RPC Provider cannot be undefined.');
-    }
+
+    throw Error('RPC Provider cannot be undefined.');
   }
 
   /**
@@ -59,9 +62,8 @@ class Ecoweb3 {
     if (this.rpc) {
       return new ErcToken(this.rpc, tokenAddress);
     }
-    else {
-      throw Error('RPC Provider cannot be undefined.');
-    }
+
+    throw Error('RPC Provider cannot be undefined.');
   }
 
   /**
@@ -82,11 +84,11 @@ class Ecoweb3 {
     return new Api(urlStr);
   }
 
-  static Tx (networkStr) {
+  static Tx(networkStr) {
     return new Tx(getNetwork(networkStr));
   }
 
-  static Account (networkStr) {
+  static Account(networkStr) {
     return new Account(getNetwork(networkStr));
   }
 }

@@ -1,48 +1,65 @@
 const ecocjs = require('./ecocjs');
 
-const Rng = () => { return Buffer.from('zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz') }
-
 class Account {
   constructor(network) {
-    this.network = network
-    this.utxoList =[]
+    this.network = network;
+    this.utxoList = [];
   }
 
   addUtxo(utxoList) {
-    this.utxoList.push(...utxoList)
+    this.utxoList.push(...utxoList);
   }
 
   spendUtxo(amount, fee) {
-    const spent = ecocjs.utils.selectTxs(this.utxoList, amount, fee)
-    return spent
+    const spent = ecocjs.utils.selectTxs(this.utxoList, amount, fee);
+    return spent;
   }
-  
-  createNewAddress(rng=Rng) {
-    if (!this.account) {
-      this.account=ecocjs.ECPair.makeRandom({ network: this.network, rng: rng })
+
+  getKeypair() {
+    if (this.keyPair) {
+      return this.keyPair;
     }
-    return this.account.getAddress()
+
+    throw Error('dont have any keypair yet');
+  }
+
+  toAddr() {
+    if (this.keyPair) {
+      return this.keyPair.getAddress();
+    }
+
+    throw Error('dont have any keypair yet');
+  }
+
+  toPubkey(buffer = false) {
+    if (this.keyPair) {
+      return buffer ? this.keyPair.getPublicKeyBuffer() : this.keyPair.getPublicKeyBuffer().toString('hex');
+    }
+
+    throw Error('dont have any keypair yet');
+  }
+
+  toWIF() {
+    if (this.keyPair) {
+      return this.keyPair.toWIF();
+    }
+
+    throw Error('dont have any account yet');
+  }
+
+  createNewAddress(rng) {
+    const opts = { network: this.network };
+    if (rng) {
+      opts.rng = rng;
+    }
+    if (!this.keyPair) {
+      this.keyPair = ecocjs.ECPair.makeRandom(opts);
+    }
   }
 
   fromWIF(WIF) {
-    if (!this.account) {
-      this.account=ecocjs.ECPair.fromWIF(WIF)
-    }
-    return this.account.getAddress()
-  }
-
-  fromSHA256 (hash) {
-    if (!this.account) {
-      this.account=ecocjs.ECPair.fromPrivateKey(hash)
-    }
-    return this.account.getAddress()
-  }
-  toWIF() {
-    if (this.account) {
-      return this.account.toWIF()
-    }
-    else {
-      throw Error('dont have any account yet');
+    if (!this.keyPair) {
+      this.keyPair = ecocjs.ECPair.fromWIF(WIF, this.network);
     }
   }
 }
