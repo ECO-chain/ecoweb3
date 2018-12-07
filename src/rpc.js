@@ -11,7 +11,7 @@ class RPC {
   constructor(rpcProvider) {
     this.provider = initRPC(rpcProvider);
   }
-  
+
   async isConnected() {
     try {
       const res = await this.provider.rawCall('getnetworkinfo');

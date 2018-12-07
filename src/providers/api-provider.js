@@ -10,7 +10,7 @@ class ApiProvider {
   * Configure the Api Service Provider.
   * @param {string} urlString URL of the blockchain API. eg. http://api.n1.ecoc.io:port/api_prefix
   */
-  constructor(urlString, apiPrefix) {
+  constructor(urlString) {
     this.apiUrl = url.parse(urlString);
   }
 

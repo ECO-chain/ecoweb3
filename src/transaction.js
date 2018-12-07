@@ -2,12 +2,12 @@ const ecocjs = require('./ecocjs');
 
 class Transaction {
   constructor(network) {
-    this.network = network
+    this.network = network;
     this.script = ecocjs.script;
-    this.selectUTXO = ecocjs.utils.selectTxs
-    this.buildPubKeyHash = ecocjs.utils.buildPubKeyHashTransaction
-    this.buildCreateContract = ecocjs.utils.buildCreateContractTransaction
-    this.buildSendToContract = ecocjs.utils.buildSendToContractTransaction
+    this.selectUTXO = ecocjs.utils.selectTxs;
+    this.buildPubKeyHash = ecocjs.utils.buildPubKeyHashTransaction;
+    this.buildCreateContract = ecocjs.utils.buildCreateContractTransaction;
+    this.buildSendToContract = ecocjs.utils.buildSendToContractTransaction;
   }
 
   TxBuilder() {
