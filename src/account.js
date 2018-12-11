@@ -1,9 +1,12 @@
 const ecocjs = require('./ecocjs');
 
 class Account {
-  constructor(network) {
+  constructor(AccountNetwork) {
+    const network = (typeof AccountNetwork === 'string') ? ecocjs.getNetwork(AccountNetwork) : AccountNetwork;
+    const utxoList = [];
+
     this.network = network;
-    this.utxoList = [];
+    this.utxoList = utxoList;
   }
 
   addUtxo(utxoList) {
@@ -15,11 +18,22 @@ class Account {
     return spent;
   }
 
+  getBalance(utxoList) {
+    if (!utxoList) {
+      utxoList = this.utxoList;
+    }
+    const balance = ecocjs.utils.getBalanceFromTxs(utxoList);
+
+    return {
+      amount: balance.div(1e8).toNumber(),
+      satoshis: balance.toNumber(),
+    };
+  }
+
   getKeypair() {
     if (this.keyPair) {
       return this.keyPair;
     }
-
     throw Error('dont have any keypair yet');
   }
 
@@ -27,7 +41,6 @@ class Account {
     if (this.keyPair) {
       return this.keyPair.getAddress();
     }
-
     throw Error('dont have any keypair yet');
   }
 
@@ -35,7 +48,6 @@ class Account {
     if (this.keyPair) {
       return buffer ? this.keyPair.getPublicKeyBuffer() : this.keyPair.getPublicKeyBuffer().toString('hex');
     }
-
     throw Error('dont have any keypair yet');
   }
 
@@ -43,7 +55,6 @@ class Account {
     if (this.keyPair) {
       return this.keyPair.toWIF();
     }
-
     throw Error('dont have any account yet');
   }
 

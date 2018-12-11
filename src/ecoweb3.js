@@ -9,11 +9,6 @@ const Account = require('./account');
 const Utils = require('./utils');
 const ecocjs = require('./ecocjs');
 
-const ecocMainnet = ecocjs.networks.ecoc;
-const ecocTestnet = ecocjs.networks.ecoc_testnet;
-
-const getNetwork = networkStr => ((networkStr === 'Testnet') ? ecocTestnet : ecocMainnet);
-
 class Ecoweb3 {
   /**
    * Ecoweb3 constructor.
@@ -32,7 +27,7 @@ class Ecoweb3 {
     if (apiProvider) {
       this.api = new Api(apiProvider);
     }
-    this.network = getNetwork(networkStr);
+    this.network = ecocjs.getNetwork(networkStr);
     this.tx = new Tx(this.network);
     this.account = new Account(this.network);
     this.encoder = Encoder;
@@ -84,11 +79,11 @@ class Ecoweb3 {
   }
 
   static Tx(networkStr) {
-    return new Tx(getNetwork(networkStr));
+    return new Tx(ecocjs.getNetwork(networkStr));
   }
 
   static Account(networkStr) {
-    return new Account(getNetwork(networkStr));
+    return new Account(ecocjs.getNetwork(networkStr));
   }
 }
 

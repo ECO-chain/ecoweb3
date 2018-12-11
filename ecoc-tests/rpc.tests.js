@@ -7,17 +7,16 @@ const Decoder = require('../src/formatters/decoder');
 
 const { assert } = chai;
 
-describe('Providers', () => {
+describe('RpcProviders', () => {
   describe('initRPC', () => {
     it('accepts a url string', () => {
-      const instance = initRPC(process.env.NODE_RPC);
+      const instance = initRPC(process.env.ECOC_RPC_ADDRESS);
       assert.isDefined(instance);
       assert.isTrue(instance.constructor.name === 'RpcProvider');
     });
 
-
     it('accepts an RpcProvider', () => {
-      const instance = initRPC(new RpcProvider(process.env.NODE_RPC));
+      const instance = initRPC(new RpcProvider(process.env.ECOC_RPC_ADDRESS));
       assert.isDefined(instance);
       assert.isTrue(instance.constructor.name === 'RpcProvider');
     });

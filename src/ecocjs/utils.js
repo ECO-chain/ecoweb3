@@ -42,6 +42,22 @@ function hex2Buffer(hexString) {
 }
 
 /**
+ * This is a function for get the total balance of ecochain in utxos
+ * the transaction object takes at least 3 fields, value(unit is 1e-8 ECO) , confirmations and isStake
+ *
+ * @param [transaction] unspentTransactions
+ * @returns [amount] (Unit ECO)
+ */
+function getBalanceFromTxs(unspentTransactions) {
+  /* compute total balance */
+  let amount = new BigNumber(0);
+  unspentTransactions.forEach((tx) => {
+    amount = amount.plus(tx.satoshis);
+  });
+  return amount;
+}
+
+/**
  * This is a function for selecting ecochain utxos to build transactions
  * the transaction object takes at least 3 fields, value(unit is 1e-8 ECO) , confirmations and isStake
  *
@@ -207,6 +223,7 @@ function buildSendToContractTransaction(keyPair, contractAddress, encodedData, g
 }
 
 module.exports = {
+  getBalanceFromTxs,
   selectTxs,
   buildPubKeyHashTransaction,
   buildCreateContractTransaction,

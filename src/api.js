@@ -2,23 +2,17 @@ const { initAPI } = require('./providers');
 
 class API {
   /**
-   * Contract constructor.
+   * Api constructor.
    * @param {string|Ecoweb3Provider} apiProvider Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
    */
 
   constructor(apiProvider) {
-    this.apiProvider = initAPI(apiProvider);
+    this.provider = initAPI(apiProvider);
   }
 
-  ApiConfig(apiProvider) {
-    if (!this.apiProvider) {
-      this.apiProvider = initAPI(apiProvider);
-    }
-  }
-
-  async isApiConnected() {
+  async isConnected() {
     try {
-      const res = await this.apiProvider.Get('/sync');
+      const res = await this.provider.get('/sync');
       return typeof res === 'object';
     } catch (err) {
       return false;
@@ -26,7 +20,7 @@ class API {
   }
 
   getUtxoList(address) {
-    return this.apiProvider.Get(`/addrs/${address}/utxo`);
+    return this.provider.get(`/addrs/${address}/utxo`);
   }
 }
 
