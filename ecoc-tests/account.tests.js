@@ -35,6 +35,12 @@ describe('Account', () => {
       assert.throws(() => accout.toAddr());
       assert.throws(() => accout.getKeypair());
     });
+    it('throws if create or importing an existed keyPair', () => {
+      accout = new Account('Testnet');
+      accout.fromWIF(getDefaultEcocPrivKey());
+      assert.throws(() => accout.fromWIF(getDefaultEcocPrivKey()));
+      assert.throws(() => accout.createNewAddress());
+    });
   });
 
   describe('Mainnet', () => {

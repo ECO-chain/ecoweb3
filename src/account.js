@@ -15,6 +15,15 @@ class Account {
     }
   }
 
+  addUtxo(txs) {
+    this.utxoList.push(...txs);
+  }
+
+  spendUtxo(amount, fee) {
+    const spent = ecocjs.utils.selectTxs(this.utxoList, amount, fee);
+    return spent;
+  }
+
   send(args) {
     const {
       rpc,
@@ -43,15 +52,6 @@ class Account {
       txs,
     );
     return rpc.sendRawTx(rawSignedTx);
-  }
-
-  addUtxo(txs) {
-    this.utxoList.push(...txs);
-  }
-
-  spendUtxo(amount, fee) {
-    const spent = ecocjs.utils.selectTxs(this.utxoList, amount, fee);
-    return spent;
   }
 
   getBalance(utxoList) {
@@ -99,15 +99,17 @@ class Account {
     if (rng) {
       opts.rng = rng;
     }
-    if (!this.keyPair) {
-      this.keyPair = ecocjs.ECPair.makeRandom(opts);
+    if (this.keyPair) {
+      throw Error('already have keypair');
     }
+    this.keyPair = ecocjs.ECPair.makeRandom(opts);
   }
 
   fromWIF(WIF) {
-    if (!this.keyPair) {
-      this.keyPair = ecocjs.ECPair.fromWIF(WIF, this.network);
+    if (this.keyPair) {
+      throw Error('already have keypair');
     }
+    this.keyPair = ecocjs.ECPair.fromWIF(WIF, this.network);
   }
 }
 
