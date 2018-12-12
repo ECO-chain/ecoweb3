@@ -1,16 +1,22 @@
 const ecocjs = require('./ecocjs');
 
 class Account {
-  constructor(AccountNetwork) {
-    const network = (typeof AccountNetwork === 'string') ? ecocjs.getNetwork(AccountNetwork) : AccountNetwork;
-    const utxoList = [];
-
+  constructor(Network) {
+    const network = (typeof Network === 'string') ? ecocjs.getNetwork(Network) : Network;
     this.network = network;
-    this.utxoList = utxoList;
+    this.setUtxo([]);
   }
 
-  addUtxo(utxoList) {
-    this.utxoList.push(...utxoList);
+  setUtxo(txs) {
+    if (Array.isArray(txs)) {
+      this.utxoList = txs;
+    } else {
+      throw Error('utxo must be list');
+    }
+  }
+
+  addUtxo(txs) {
+    this.utxoList.push(...txs);
   }
 
   spendUtxo(amount, fee) {
@@ -19,11 +25,11 @@ class Account {
   }
 
   getBalance(utxoList) {
-    if (!utxoList) {
-      utxoList = this.utxoList;
+    let txs = utxoList;
+    if (!txs) {
+      txs = this.utxoList;
     }
-    const balance = ecocjs.utils.getBalanceFromTxs(utxoList);
-
+    const balance = ecocjs.utils.getBalanceFromTxs(txs);
     return {
       amount: balance.div(1e8).toNumber(),
       satoshis: balance.toNumber(),

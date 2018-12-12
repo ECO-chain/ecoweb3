@@ -48,11 +48,13 @@ function hex2Buffer(hexString) {
  * @param [transaction] unspentTransactions
  * @returns [amount] (Unit ECO)
  */
-function getBalanceFromTxs(unspentTransactions) {
+function getBalanceFromTxs(unspentTransactions, confimation = 0) {
   /* compute total balance */
   let amount = new BigNumber(0);
   unspentTransactions.forEach((tx) => {
-    amount = amount.plus(tx.satoshis);
+    if (tx.confirmations >= confimation) {
+      amount = amount.plus(tx.satoshis);
+    }
   });
   return amount;
 }

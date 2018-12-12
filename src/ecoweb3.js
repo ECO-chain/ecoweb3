@@ -12,15 +12,10 @@ const ecocjs = require('./ecocjs');
 class Ecoweb3 {
   /**
    * Ecoweb3 constructor.
-   * @param {string|Ecoweb3Provider} config Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
+   * @param {Object} config Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
    */
-  constructor(config = {
-    rpcProvider: null,
-    apiProvider: null,
-    networkStr: null,
-  }) {
+  constructor(config) {
     const { rpcProvider, apiProvider, networkStr } = config;
-
     if (rpcProvider) {
       this.rpc = new Rpc(rpcProvider);
     }
