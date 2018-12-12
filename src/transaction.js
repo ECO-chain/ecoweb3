@@ -1,7 +1,8 @@
 const ecocjs = require('./ecocjs');
 
 class Transaction {
-  constructor(network) {
+  constructor(Network) {
+    const network = (typeof Network === 'string') ? ecocjs.getNetwork(Network) : Network;
     this.network = network;
     this.script = ecocjs.script;
     this.selectUTXO = ecocjs.utils.selectTxs;

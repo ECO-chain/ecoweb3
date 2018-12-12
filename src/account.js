@@ -15,6 +15,36 @@ class Account {
     }
   }
 
+  send(args) {
+    const {
+      rpc,
+      to,
+      amount,
+      fee,
+      utxo,
+    } = args;
+
+    if (!rpc.provider) {
+      throw Error('must provide with rpc object for sending tx');
+    }
+    if (!this.keyPair) {
+      throw Error('dont have any keypair yet');
+    }
+    let txs = utxo;
+    if (!txs) {
+      txs = this.spendUtxo(amount, fee);
+    }
+
+    const rawSignedTx = ecocjs.utils.buildPubKeyHashTransaction(
+      this.keyPair,
+      to,
+      amount,
+      fee,
+      txs,
+    );
+    return rpc.sendRawTx(rawSignedTx);
+  }
+
   addUtxo(txs) {
     this.utxoList.push(...txs);
   }
