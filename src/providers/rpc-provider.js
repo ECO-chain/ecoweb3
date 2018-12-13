@@ -5,13 +5,13 @@ const { isEmpty } = require('lodash');
 /**
  * HTTP Provider for interacting with the blockchain via JSONRPC POST calls.
  */
-class HttpProvider {
+class RpcProvider {
   /**
    * Constructor.
    * @param {string} urlString URL of the blockchain API. eg. http://username:password@th.no.de.ip:port
    */
   constructor(urlString) {
-    this.url = url.parse(urlString);
+    this.rpcUrl = url.parse(urlString);
   }
 
   /**
@@ -35,10 +35,10 @@ class HttpProvider {
     // Execute POST request
     const { result, error } = (await axios({
       method: 'post',
-      url: `${this.url.protocol}//${this.url.host}`,
+      url: `${this.rpcUrl.protocol}//${this.rpcUrl.host}`,
       headers: {
         'Content-Type': 'text/plain',
-        Authorization: `Basic ${Buffer.from(this.url.auth).toString('base64')}`,
+        Authorization: `Basic ${Buffer.from(this.rpcUrl.auth).toString('base64')}`,
       },
       data: JSON.stringify(body),
     })).data;
@@ -52,4 +52,4 @@ class HttpProvider {
   }
 }
 
-module.exports = HttpProvider;
+module.exports = RpcProvider;

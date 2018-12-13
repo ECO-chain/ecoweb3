@@ -1,4 +1,4 @@
-const { initProvider } = require('./providers');
+const { initRPC } = require('./providers');
 const Utils = require('./utils');
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
@@ -11,12 +11,12 @@ const DEFAULT_GAS_PRICE = 0.0000004; // Unit: ECO
 class Contract {
   /**
    * Contract constructor.
-   * @param {string|Ecoweb3Provider} provider Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
+   * @param {string|Ecoweb3Provider} rpcProvider Either URL string to create HttpProvider or a Ecoweb3 compatible provider.
    * @param {string} address Address of the contract.
    * @param {array} abi ABI of the contract.
    */
-  constructor(provider, address, abi) {
-    this.provider = initProvider(provider);
+  constructor(rpcProvider, address, abi) {
+    this.rpcProvider = initRPC(rpcProvider);
     this.address = Utils.trimHexPrefix(address);
     this.abi = abi;
     this.amount = DEFAULT_AMOUNT;
@@ -33,7 +33,7 @@ class Contract {
   async call(methodName, params) {
     const { methodArgs, senderAddress } = params;
     const data = Encoder.constructData(this.abi, methodName, methodArgs);
-    let result = await this.provider.rawCall('callcontract', [this.address, data, senderAddress]);
+    let result = await this.rpcProvider.rawCall('callcontract', [this.address, data, senderAddress]);
     result = Decoder.decodeCall(result, this.abi, methodName, true); // Format the result
     return result;
   }
@@ -54,7 +54,7 @@ class Contract {
     const limit = gasLimit || this.gasLimit;
     const price = gasPrice || this.gasPrice;
 
-    const result = await this.provider.rawCall('sendtocontract', [
+    const result = await this.rpcProvider.rawCall('sendtocontract', [
       this.address,
       data,
       amt,
