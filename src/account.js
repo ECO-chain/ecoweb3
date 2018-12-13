@@ -1,5 +1,14 @@
 const ecocjs = require('./ecocjs');
 
+const utxoFilter = (utxoList, subtracted) => utxoList.filter((item) => {
+  for (let i = 0; i < subtracted.length; i++) {
+    if (item.txid === subtracted[i].txid && item.vout === subtracted[i].vout) {
+      return false;
+    }
+  }
+  return true;
+});
+
 class Account {
   constructor(Network) {
     const network = (typeof Network === 'string') ? ecocjs.getNetwork(Network) : Network;
@@ -16,11 +25,14 @@ class Account {
   }
 
   addUtxo(txs) {
-    this.utxoList.push(...txs);
+    const utxoLeft = utxoFilter(txs, this.utxoList);
+    this.utxoList.push(...utxoLeft);
   }
 
   spendUtxo(amount, fee) {
     const spent = ecocjs.utils.selectTxs(this.utxoList, amount, fee);
+    const utxoLeft = utxoFilter(this.utxoList, spent);
+    this.utxoList = utxoLeft;
     return spent;
   }
 
