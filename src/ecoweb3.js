@@ -1,6 +1,6 @@
 const Encoder = require('./formatters/encoder');
 const Decoder = require('./formatters/decoder');
-const ErcToken = require('./erctoken/erc-token');
+const EcrcToken = require('./ecrctoken/ecrc-token');
 const Contract = require('./contract');
 const Rpc = require('./rpc');
 const Api = require('./api');
@@ -47,9 +47,9 @@ class Ecoweb3 {
   /**
    * ERC-20 Token Contract Implementation
    */
-  ErcToken(tokenAddress) {
+  EcrcToken(tokenAddress) {
     if (this.rpc) {
-      return new ErcToken(this.rpc, tokenAddress);
+      return new EcrcToken(this.rpc, tokenAddress);
     }
 
     throw Error('RPC Provider cannot be undefined.');
