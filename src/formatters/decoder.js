@@ -1,7 +1,7 @@
 const { isEmpty, isUndefined, each, find, filter, assign, map } = require('lodash');
 const Web3Utils = require('web3-utils');
 const EthjsAbi = require('ethjs-abi');
-const crypto = require('crypto');
+const createHash = require('create-hash');
 const bs58 = require('bs58');
 
 const Encoder = require('./encoder');
@@ -29,9 +29,9 @@ class Decoder {
 
     const ecoAdressBuffer = Buffer.from(ecoAdress, 'hex');
     // Double SHA256 hash
-    const hash1 = crypto.createHash('sha256').update(ecoAdressBuffer).digest('Hex');
+    const hash1 = createHash('sha256').update(ecoAdressBuffer).digest('Hex');
     const hash1Buffer = Buffer.from(hash1, 'hex');
-    const hash2 = crypto.createHash('sha256').update(hash1Buffer).digest('Hex');
+    const hash2 = createHash('sha256').update(hash1Buffer).digest('Hex');
 
     // get first 4 bytes
     ecoAdress += hash2.slice(0, 8);
