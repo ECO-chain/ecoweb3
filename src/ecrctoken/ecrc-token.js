@@ -1,20 +1,21 @@
-const ercAbi = require('./erc-token-abi.json');
+const EcrcAbi = require('./ecrc-token-abi.json');
 const Contract = require('../contract');
+const ecocjs = require('../ecocjs');
 
-class ErcToken {
+class EcrcToken {
   constructor(provider, contractAddress) {
     this.provider = provider;
     this.tokenAddress = contractAddress;
-    this.contract = new Contract(this.provider, this.tokenAddress, ercAbi);
+    this.contract = new Contract(this.provider, this.tokenAddress, EcrcAbi);
   }
 
-  async isErcToken() {
+  async isEcrcToken() {
     return await this.totalSupply() !== '0';
   }
 
   async findInfo() {
-    if (await this.isErcToken() === false) {
-      throw Error('This is not ERC-20 Token');
+    if (await this.isEcrcToken() === false) {
+      throw Error('This is not ECRC-20 Token');
     }
 
     this.tokenName = await this.name();
@@ -33,7 +34,8 @@ class ErcToken {
 
   approve(spender, amount, account) {
     const { keypair, utxoList } = account;
-    const senderAddress = keypair.getAddress();
+    const { address } = ecocjs.payments.p2pkh({ pubkey: this.keyPair.publicKey, network: this.network });
+    const senderAddress = address;
     const params = {
       methodArgs: [spender, amount],
       senderAddress,
@@ -51,7 +53,8 @@ class ErcToken {
 
   transfer(to, amount, account) {
     const { keypair, utxoList } = account;
-    const senderAddress = keypair.getAddress();
+    const { address } = ecocjs.payments.p2pkh({ pubkey: this.keyPair.publicKey, network: this.network });
+    const senderAddress = address;
     const params = {
       methodArgs: [to, amount],
       senderAddress,
@@ -69,7 +72,8 @@ class ErcToken {
 
   transferFrom(from, to, amount, account) {
     const { keypair, utxoList } = account;
-    const senderAddress = keypair.getAddress();
+    const { address } = ecocjs.payments.p2pkh({ pubkey: this.keyPair.publicKey, network: this.network });
+    const senderAddress = address;
     const params = {
       methodArgs: [from, to, amount],
       senderAddress,
@@ -139,4 +143,4 @@ class ErcToken {
     return this.contract.call('totalSupply', param).then(res => res.executionResult.formattedOutput.totalSupply.toString(10));
   }
 }
-module.exports = ErcToken;
+module.exports = EcrcToken;

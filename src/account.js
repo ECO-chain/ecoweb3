@@ -87,14 +87,15 @@ class Account {
 
   toAddr() {
     if (this.keyPair) {
-      return this.keyPair.getAddress();
+      const { address } = ecocjs.payments.p2pkh({ pubkey: this.keyPair.publicKey, network: this.network });
+      return address;
     }
     throw Error('dont have any keypair yet');
   }
 
   toPubkey(buffer = false) {
     if (this.keyPair) {
-      return buffer ? this.keyPair.getPublicKeyBuffer() : this.keyPair.getPublicKeyBuffer().toString('hex');
+      return buffer ? this.keyPair.publicKey : this.keyPair.publicKey.toString('hex');
     }
     throw Error('dont have any keypair yet');
   }

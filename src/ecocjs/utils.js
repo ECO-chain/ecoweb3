@@ -113,7 +113,8 @@ function selectTxs(unspentTransactions, amount, fee) {
  * @returns String the built tx
  */
 function buildPubKeyHashTransaction(keyPair, to, amount, fee, utxoList) {
-  const from = keyPair.getAddress();
+  const { address } = bitcoinjs.payments.p2pkh({ pubkey: keyPair.publicKey, network: keyPair.network });
+  const from = address;
   const inputs = selectTxs(utxoList, amount, fee);
   const tx = new bitcoinjs.TransactionBuilder(keyPair.network);
   let totalValue = new BigNumber(0);
@@ -192,7 +193,8 @@ function buildCreateContractTransaction(keyPair, code, gasLimit, gasPrice, fee, 
  * @returns String the built tx
  */
 function buildSendToContractTransaction(keyPair, contractAddress, encodedData, gasLimit, gasPrice, fee, utxoList) {
-  const from = keyPair.getAddress();
+  const { address } = bitcoinjs.payments.p2pkh({ pubkey: keyPair.publicKey, network: keyPair.network });
+  const from = address;
   const amount = 0;
   fee = new BigNumber(gasLimit).times(gasPrice).div(1e8).plus(fee)
     .toNumber();
