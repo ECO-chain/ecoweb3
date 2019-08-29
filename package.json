@@ -27,7 +27,7 @@
     "dotenv": "^6.0.0",
     "ethjs-abi": "^0.2.1",
     "js-beautify": "^1.8.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "safe-buffer": "^5.1.1",
     "utf8": "^3.0.0",
     "web3-utils": "^1.0.0-beta.26"
