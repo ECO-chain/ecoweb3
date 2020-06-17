@@ -1,7 +1,7 @@
 {
   "name": "ecoweb3",
   "namespace": "ecoc",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Ecochain JavaScript SDK",
   "main": "./src/index.js",
   "repository": {
