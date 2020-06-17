@@ -1,7 +1,7 @@
 {
   "name": "ecoweb3",
   "namespace": "ecoc",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "Ecochain JavaScript SDK",
   "main": "./src/index.js",
   "repository": {
@@ -27,7 +27,7 @@
     "dotenv": "^6.0.0",
     "ethjs-abi": "^0.2.1",
     "js-beautify": "^1.8.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "safe-buffer": "^5.1.1",
     "utf8": "^3.0.0",
     "web3-utils": "^1.0.0-beta.26"
@@ -40,7 +40,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "husky": "^1.0.0-rc.13",
     "lint-staged": "^7.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^8.0.1"
   },
   "scripts": {
     "lint": "eslint -- src/. test/.",

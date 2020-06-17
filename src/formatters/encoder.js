@@ -270,7 +270,8 @@ class Encoder {
       throw Error(`Method ${methodName} not defined in ABI.`);
     }
     if (methodObj.inputs.length !== args.length) {
-      throw Error('Number of arguments supplied does not match ABI method args.');
+      throw Error(`Number of arguments supplied does not match ABI method args.\
+      Should be ${methodObj.inputs.length} but ${args.length} arguments where provided'`);
     }
 
     return true;

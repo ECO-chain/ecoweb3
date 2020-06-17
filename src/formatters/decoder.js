@@ -19,25 +19,25 @@ class Decoder {
       throw new Error('Invalid hex address');
     }
 
-    let ecoAdress = hexAddress;
+    let ecocAddress = hexAddress;
     // Add network byte
     if (isMainnet) {
-      ecoAdress = MainnetNetworkByte + ecoAdress;
+      ecocAddress = MainnetNetworkByte + ecocAddress;
     } else {
-      ecoAdress = TestnetNetworkByte + ecoAdress;
+      ecocAddress = TestnetNetworkByte + ecocAddress;
     }
 
-    const ecoAdressBuffer = Buffer.from(ecoAdress, 'hex');
+    const ecocAddressBuffer = Buffer.from(ecocAddress, 'hex');
     // Double SHA256 hash
-    const hash1 = createHash('sha256').update(ecoAdressBuffer).digest('Hex');
+    const hash1 = createHash('sha256').update(ecocAddressBuffer).digest('Hex');
     const hash1Buffer = Buffer.from(hash1, 'hex');
     const hash2 = createHash('sha256').update(hash1Buffer).digest('Hex');
 
     // get first 4 bytes
-    ecoAdress += hash2.slice(0, 8);
+    ecocAddress += hash2.slice(0, 8);
 
     // base58 encode
-    const address = bs58.encode(Buffer.from(ecoAdress, 'hex'));
+    const address = bs58.encode(Buffer.from(ecocAddress, 'hex'));
     return address;
   }
 
