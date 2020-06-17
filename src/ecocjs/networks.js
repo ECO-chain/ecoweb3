@@ -1,5 +1,5 @@
-
 Object.defineProperty(exports, '__esModule', { value: true });
+
 exports.ecoc = {
   messagePrefix: '\x15Ecoc Signed Message:\n',
   bech32: 'bc',

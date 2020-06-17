@@ -16,16 +16,22 @@ const Ecoweb3 = require('ecoweb3');
 
 // set the correct RPC port
 // in the node config file set server=1. If not, set rpcbind=0.0.0.0 (or a mask). Also set rpcuser, rpcpassword, rpcport and rpcallowip
-const ecocw3 = new Ecoweb3('http://rpcuser:rpcpassword@eco.no.de.ip:rpc-port');
+
+config = {
+  rpcProvider: 'http://ecoc:ecoc@localhost:36562',
+  networkStr:'Mainnet'
+}
+
+const ecocw3 = new Ecocw3(config);
 ```
 
-## Methods of Ecoweb3 class##
+## Methods of Ecoweb3 RPC class##
 ### isConnected()
 
 Checks if the attempet connection to eco node was successful or not.
 ```
 async function isConnected() {
-  return await ecocw3.isConnected();
+  return await ecocw3.rpc.isConnected();
 }
 ```
 
@@ -33,7 +39,7 @@ async function isConnected() {
 Converts an ecochain address to hex format.
 ```
 async function getHexAddress() {
-  return await ecocw3.getHexAddress('eELfUyry7GkMVi7xNjq9zpuYbKbRsa6Hdg');
+  return await ecocw3.rpc.getHexAddress('eELfUyry7GkMVi7xNjq9zpuYbKbRsa6Hdg');
 }
 ```
 
@@ -41,7 +47,7 @@ async function getHexAddress() {
 Converts a hex address to ecochain format.
 ```
 async function fromHexAddress() {
-  return await ecocw3.fromHexAddress('864f980d88cdfb44a2e3293ecc01084e6d686e7a');
+  return await ecocw3.rpc.fromHexAddress('864f980d88cdfb44a2e3293ecc01084e6d686e7a');
 }
 ```
 
@@ -49,7 +55,7 @@ async function fromHexAddress() {
 Gets the current block height of the ecochain node.
 ```
 async function getBlockCount() {
-  return await ecocw3.getBlockCount();
+  return await ecocw3.rpc.getBlockCount();
 }
 ```
 
@@ -61,7 +67,7 @@ async function getTransaction(args) {
     transactionId, // string
   } = args;
 
-  return await ecocw3.getTransactionReceipt(transactionId);
+  return await ecocw3.rpc.getTransactionReceipt(transactionId);
 }
 ```
 
@@ -73,7 +79,7 @@ async function getTransactionReceipt(args) {
     transactionId, // string
   } = args;
 
-  return await ecoweb3.getTransactionReceipt(transactionId);
+  return await ecoweb3.rpc.getTransactionReceipt(transactionId);
 }
 ```
 
@@ -81,7 +87,23 @@ async function getTransactionReceipt(args) {
 Gets the unspent outputs that can be used.
 ```
 async function listUnspent() {
-  return await ecocw3.listUnspent();
+  return await ecocw3.rpc.listUnspent();
+}
+```
+
+### sendToAddress()
+Send ECOC to any ECOChain address.
+```
+async function sendToAddress() {
+  return await ecocw3.rpc.sendToAddress("EddvsnTiJDGmkLoFPLHBpMpaJxnHheDjE5", 0.1, "", "", false, "EZjYNo5Rxwkwu3ciBrZYLauAWfJuYeLe1s", false);
+}
+```
+
+### sendMany()
+Send ECOC to one or many ECOChain addressess.
+```
+async function sendMany() {
+  return await ecocw3.rpc.sendMany({"EddvsnTiJDGmkLoFPLHBpMpaJxnHheDjE5":0.5, "EZjYNo5Rxwkwu3ciBrZYLauAWfJuYeLe1s": 0.6});
 }
 ```
 
@@ -110,7 +132,7 @@ async function(args) {
   }
 
   // removeHexPrefix = true removes the '0x' hex prefix from all hex values
-  return await ecoweb3.searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, true);
+  return await ecoweb3.rpc.searchLogs(fromBlock, toBlock, addresses, topics, contractMetadata, true);
 }
 ```
 
@@ -188,48 +210,45 @@ async function exampleSend(args) {
 ```
 
 ## Encoder
-`Encoder` static functions are exposed in Ecoweb3 instances.
+`Encoder` static functions are exposed in Ecoweb3 instances or can be import directly.
 ```
-const { Ecoweb3 } = require('ecoweb3');
+const { Encoder } = require('ecoweb3');
 
-const ecoweb3 = new Ecoweb3('http://rpcuser:rpcpassword@eco.no.de.ip:rpc-port');
-ecoweb3.encoder.objToHash(abiObj, isFunction);
-ecoweb3.encoder.addressToHex(address);
-ecoweb3.encoder.boolToHex(value);
-ecoweb3.encoder.intToHex(num);
-ecoweb3.encoder.uintToHex(num);
-ecoweb3.encoder.stringToHex(string, maxCharLen);
-ecoweb3.encoder.stringArrayToHex(strArray, numOfItems);
-ecoweb3.encoder.padHexString(hexStr);
-ecoweb3.encoder.constructData(abi, methodName, args);
+Encoder.objToHash(abiObj, isFunction);
+Encoder.addressToHex(address);
+Encoder.boolToHex(value);
+Encoder.intToHex(num);
+Encoder.uintToHex(num);
+Encoder.stringToHex(string, maxCharLen);
+Encoder.stringArrayToHex(strArray, numOfItems);
+Encoder.padHexString(hexStr);
+Encoder.constructData(abi, methodName, args);
 ```
 
 ## Decoder
-`Decoder` static functions are exposed in Ecoweb3 instances.
+`Decoder` static functions are exposed in Ecoweb3 instances or can be import directly.
 ```
-const Ecoweb3 = require('ecoweb3');
+const { Decoder } = require('ecoweb3');
 
-const ecow3 = new Ecoweb3('http://rpcuser:rpcpassword@eco.no.de.ip:rpc-port');
-ecow3.decoder.toEcoAddress(hexAddress, isMainnet);
-ecow3.decoder.removeHexPrefix(value);
-ecow3.decoder.decodeSearchLog(rawOutput, contractMetadata, removeHexPrefix);
-ecow3.decoder.decodeCall(rawOutput, contractABI, methodName, removeHexPrefix);
+Decoder.toEcoAddress(hexAddress, isMainnet);
+Decoder.removeHexPrefix(value);
+Decoder.decodeSearchLog(rawOutput, contractMetadata, removeHexPrefix);
+Decoder.decodeCall(rawOutput, contractABI, methodName, removeHexPrefix);
 ```
 
 ## Utils
-`Utils` static functions are exposed in Ecoweb3 instances.
+`Utils` static functions are exposed in Ecoweb3 instances or can be import directly.
 ```
-const Ecoweb3 = require('ecoweb3');
+const { Utils } = require('ecoweb3');
 
-const ecow3 = new Ecoweb3('http://rpcuser:rpcpassword@eco.no.de.ip:rpc-port');
-ecow3.utils.paramsCheck(methodName, params, required, validators);
-ecow3.utils.appendHexPrefix(value);
-ecow3.utils.trimHexPrefix(str);
-ecow3.utils.chunkString(str, length);
-ecow3.utils.toUtf8(hex);
-ecow3.utils.fromUtf8(str);
-ecow3.utils.isJson(str);
-ecow3.utils.isEcoAddress(address);
+Utils.paramsCheck(methodName, params, required, validators);
+Utils.appendHexPrefix(value);
+Utils.trimHexPrefix(str);
+Utils.chunkString(str, length);
+Utils.toUtf8(hex);
+Utils.fromUtf8(str);
+Utils.isJson(str);
+Utils.isEcoAddress(address);
 ```
 
 ### Network

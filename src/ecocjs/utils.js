@@ -96,7 +96,7 @@ function selectTxs(unspentTransactions, amount, fee) {
     if (findTotal.isGreaterThanOrEqualTo(value)) break;
   }
   if (value.isGreaterThan(findTotal)) {
-    throw new Error('You do not have enough ECO to send');
+    throw new Error('You do not have enough ECOC to send');
   }
   return find;
 }

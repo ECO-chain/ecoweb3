@@ -327,9 +327,6 @@ class RPC {
    * @param {string} comment Comment used to store what the transaction is for.
    * @param {string} commentTo Comment to store name/organization to which you're sending the transaction.
    * @param {boolean} subtractFeeFromAmount The fee will be deducted from the amount being sent.
-   * @param {boolean} replaceable Allow this transaction to be replaced by a transaction with higher fees via BIP 125.
-   * @param {number} confTarget Confirmation target (in blocks).
-   * @param {string} estimateMode The fee estimate mode, must be one of: "UNSET", "ECONOMICAL", "CONSERVATIVE"
    * @param {string} senderAddress The ECOC address that will be used to send money from.
    * @param {boolean} changeToSender Return the change to the sender.
    * @return {Promise} Transaction ID or Error
@@ -340,9 +337,6 @@ class RPC {
     comment = '',
     commentTo = '',
     subtractFeeFromAmount = false,
-    replaceable = true,
-    confTarget = 6,
-    estimateMode = 'UNSET',
     senderAddress,
     changeToSender = false,
   ) {
@@ -352,9 +346,6 @@ class RPC {
       comment,
       commentTo,
       subtractFeeFromAmount,
-      replaceable,
-      confTarget,
-      estimateMode,
       senderAddress,
       changeToSender,
     ]);
