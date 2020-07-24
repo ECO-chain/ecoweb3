@@ -74,13 +74,13 @@ function selectTxs(unspentTransactions, amount, fee) {
   const immatureList = [];
   let i;
   for (i = 0; i < unspentTransactions.length; i++) {
-    if (unspentTransactions[i].confirmations >= 500 || unspentTransactions[i].isStake === false) {
+    if (unspentTransactions[i].confirmations >= 1875 || unspentTransactions[i].isStake === false) {
       matureList[matureList.length] = unspentTransactions[i];
     } else {
       immatureList[immatureList.length] = unspentTransactions[i];
     }
   }
-  matureList.sort((a, b) => a.value - b.value);
+  matureList.sort((a, b) => a.amount - b.amount);
   immatureList.sort((a, b) => b.confirmations - a.confirmations);
   /* eslint-disable no-param-reassign */
   unspentTransactions = matureList.concat(immatureList);
