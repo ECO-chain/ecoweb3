@@ -47,19 +47,16 @@ class ApiProvider {
     }
 
     // Execute POST request
-    const { result, error } = (await axios({
+    const response = await axios({
       method: 'post',
       url: `${this.apiUrl.href.replace(/([^:]\/)\/+/g, '')}${resource}`,
       headers: {},
       data,
-    })).data;
-
-    // Handle error
-    if (error) {
+    }).catch((error) => {
       throw Error(error);
-    }
+    });
 
-    return result;
+    return response.data;
   }
 }
 
