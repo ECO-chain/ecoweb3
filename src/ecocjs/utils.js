@@ -11,7 +11,7 @@ const { Buffer } = require('safe-buffer');
 function number2Buffer(num) {
   /* eslint-disable no-bitwise */
   const buffer = [];
-  const neg = (num < 0);
+  const neg = num < 0;
   /* eslint-disable no-param-reassign */
   num = Math.abs(num);
   while (num) {
@@ -36,7 +36,8 @@ function hex2Buffer(hexString) {
   const buffer = [];
   let i;
   for (i = 0; i < hexString.length; i += 2) {
-    buffer[buffer.length] = (parseInt(hexString[i], 16) << 4) | parseInt(hexString[i + 1], 16); // eslint-disable-line no-bitwise
+    buffer[buffer.length] =
+      (parseInt(hexString[i], 16) << 4) | parseInt(hexString[i + 1], 16); // eslint-disable-line no-bitwise
   }
   return Buffer.from(buffer);
 }
@@ -74,7 +75,10 @@ function selectTxs(unspentTransactions, amount, fee) {
   const immatureList = [];
   let i;
   for (i = 0; i < unspentTransactions.length; i++) {
-    if (unspentTransactions[i].confirmations >= 1875 || unspentTransactions[i].isStake === false) {
+    if (
+      unspentTransactions[i].confirmations >= 1875 ||
+      unspentTransactions[i].isStake === false
+    ) {
       matureList[matureList.length] = unspentTransactions[i];
     } else {
       immatureList[immatureList.length] = unspentTransactions[i];
@@ -86,7 +90,9 @@ function selectTxs(unspentTransactions, amount, fee) {
   unspentTransactions = matureList.concat(immatureList);
 
   /* compute total balance */
-  const value = new BigNumber(amount).plus(fee).times(1e8); /* add fee and add 8 digits to total */
+  const value = new BigNumber(amount)
+    .plus(fee)
+    .times(1e8); /* add fee and add 8 digits to total */
   const find = [];
   let findTotal = new BigNumber(0); /* current balance */
   for (i = 0; i < unspentTransactions.length; i++) {
@@ -98,6 +104,7 @@ function selectTxs(unspentTransactions, amount, fee) {
   if (value.isGreaterThan(findTotal)) {
     throw new Error('You do not have enough ECOC to send');
   }
+
   return find;
 }
 
@@ -113,7 +120,10 @@ function selectTxs(unspentTransactions, amount, fee) {
  * @returns String the built tx
  */
 function buildPubKeyHashTransaction(keyPair, to, amount, fee, utxoList) {
-  const { address } = bitcoinjs.payments.p2pkh({ pubkey: keyPair.publicKey, network: keyPair.network });
+  const { address } = bitcoinjs.payments.p2pkh({
+    pubkey: keyPair.publicKey,
+    network: keyPair.network,
+  });
   const from = address;
   const inputs = selectTxs(utxoList, amount, fee);
   const tx = new bitcoinjs.TransactionBuilder(keyPair.network);
@@ -147,15 +157,25 @@ function buildPubKeyHashTransaction(keyPair, to, amount, fee, utxoList) {
  * @param [transaction] utxoList
  * @returns String the built tx
  */
-function buildCreateContractTransaction(keyPair, code, gasLimit, gasPrice, fee, utxoList) {
+function buildCreateContractTransaction(
+  keyPair,
+  code,
+  gasLimit,
+  gasPrice,
+  fee,
+  utxoList,
+) {
   const from = keyPair.getplusress();
   const amount = 0;
-  fee = new BigNumber(gasLimit).times(gasPrice).div(1e8).plus(fee)
+  const totalFee = new BigNumber(gasLimit)
+    .times(gasPrice)
+    .div(1e8)
+    .plus(fee)
     .toNumber();
-  const inputs = selectTxs(utxoList, amount, fee);
+  const inputs = selectTxs(utxoList, amount, totalFee);
   const tx = new bitcoinjs.TransactionBuilder(keyPair.network);
   let totalValue = new BigNumber(0);
-  const sendFee = new BigNumber(fee).times(1e8);
+  const sendFee = new BigNumber(totalFee).times(1e8);
   let i;
   for (i = 0; i < inputs.length; i++) {
     tx.addInput(inputs[i].txid, inputs[i].vout);
@@ -167,7 +187,7 @@ function buildCreateContractTransaction(keyPair, code, gasLimit, gasPrice, fee, 
     number2Buffer(gasLimit),
     number2Buffer(gasPrice),
     hex2Buffer(code),
-    OPS.OP_CREATE, /* AAL opcode for creating smart contracts */
+    OPS.OP_CREATE /* AAL opcode for creating smart contracts */,
   ]);
   tx.addOutput(contract, 0);
   if (totalValue.minus(sendFee).toNumber() > 0) {
@@ -192,16 +212,30 @@ function buildCreateContractTransaction(keyPair, code, gasLimit, gasPrice, fee, 
  * @param [transaction] utxoList
  * @returns String the built tx
  */
-function buildSendToContractTransaction(keyPair, contractAddress, encodedData, gasLimit, gasPrice, fee, utxoList) {
-  const { address } = bitcoinjs.payments.p2pkh({ pubkey: keyPair.publicKey, network: keyPair.network });
+function buildSendToContractTransaction(
+  keyPair,
+  contractAddress,
+  encodedData,
+  gasLimit,
+  gasPrice,
+  fee,
+  utxoList,
+) {
+  const { address } = bitcoinjs.payments.p2pkh({
+    pubkey: keyPair.publicKey,
+    network: keyPair.network,
+  });
   const from = address;
   const amount = 0;
-  fee = new BigNumber(gasLimit).times(gasPrice).div(1e8).plus(fee)
+  const totalFee = new BigNumber(gasLimit)
+    .times(gasPrice)
+    .div(1e8)
+    .plus(fee)
     .toNumber();
-  const inputs = selectTxs(utxoList, amount, fee);
+  const inputs = selectTxs(utxoList, amount, totalFee);
   const tx = new bitcoinjs.TransactionBuilder(keyPair.network);
   let totalValue = new BigNumber(0);
-  const sendFee = new BigNumber(fee).times(1e8);
+  const sendFee = new BigNumber(totalFee).times(1e8);
   let i;
   for (i = 0; i < inputs.length; i++) {
     tx.addInput(inputs[i].txid, inputs[i].vout);
@@ -226,10 +260,76 @@ function buildSendToContractTransaction(keyPair, contractAddress, encodedData, g
   return tx.build().toHex();
 }
 
+function generateTx(fromAddress, toAddress, network, params, utxoList) {
+  const { amount, fee } = params;
+  const from = fromAddress;
+  const inputs = selectTxs(utxoList, amount, fee);
+  const tx = new bitcoinjs.TransactionBuilder(network);
+  let totalValue = new BigNumber(0);
+  const value = new BigNumber(amount).times(1e8);
+  const sendFee = new BigNumber(fee).times(1e8);
+  let i;
+  for (i = 0; i < inputs.length; i++) {
+    tx.addInput(inputs[i].txid, inputs[i].vout);
+    totalValue = totalValue.plus(inputs[i].satoshis);
+  }
+  tx.addOutput(toAddress, new BigNumber(value).toNumber());
+  if (totalValue.minus(value).minus(sendFee).toNumber() > 0) {
+    tx.addOutput(from, totalValue.minus(value).minus(sendFee).toNumber());
+  }
+
+  return tx;
+}
+
+function generateSendToTx(
+  fromAddress,
+  contractAddress,
+  encodedData,
+  network,
+  params,
+  utxoList,
+) {
+  const { amount, gasLimit, gasPrice, fee } = params;
+  const from = fromAddress;
+  const totalFee = new BigNumber(gasLimit)
+    .times(gasPrice)
+    .div(1e8)
+    .plus(fee)
+    .toNumber();
+
+  const inputs = selectTxs(utxoList, amount, totalFee);
+  const tx = new bitcoinjs.TransactionBuilder(network);
+  let totalValue = new BigNumber(0);
+  const sendFee = new BigNumber(totalFee).times(1e8);
+  let i;
+  for (i = 0; i < inputs.length; i++) {
+    tx.addInput(inputs[i].txid, inputs[i].vout);
+    totalValue = totalValue.plus(inputs[i].satoshis);
+  }
+
+  const contract = bitcoinjs.script.compile([
+    OPS.OP_4,
+    number2Buffer(gasLimit),
+    number2Buffer(gasPrice),
+    hex2Buffer(encodedData),
+    hex2Buffer(contractAddress),
+    OPS.OP_CALL,
+  ]);
+
+  tx.addOutput(contract, amount);
+  if (totalValue.minus(sendFee).toNumber() > 0) {
+    tx.addOutput(from, totalValue.minus(sendFee).minus(amount).toNumber());
+  }
+
+  return tx;
+}
+
 module.exports = {
   getBalanceFromTxs,
   selectTxs,
   buildPubKeyHashTransaction,
   buildCreateContractTransaction,
   buildSendToContractTransaction,
+  generateTx,
+  generateSendToTx,
 };
