@@ -170,9 +170,10 @@ class Encoder {
       }
 
       // Remove the 0x hex prefix
-      array[i] = Web3Utils
-        .padRight(hexString, Constants.MAX_HEX_CHARS_PER_BYTE)
-        .slice(2, Constants.MAX_HEX_CHARS_PER_BYTE + 2);
+      array[i] = Web3Utils.padRight(hexString, Constants.MAX_HEX_CHARS_PER_BYTE).slice(
+        2,
+        Constants.MAX_HEX_CHARS_PER_BYTE + 2,
+      );
     }
 
     return array.join('');
@@ -219,7 +220,8 @@ class Encoder {
       } else {
         hex = this.boolToHex(value);
       }
-    } else if (type.match(Constants.REGEX_INT)) { // match order matters here, match int before uint
+    } else if (type.match(Constants.REGEX_INT)) {
+      // match order matters here, match int before uint
       if (value instanceof Array) {
         _.each(value, (int) => {
           hex += this.intToHex(int);
@@ -235,9 +237,11 @@ class Encoder {
       } else {
         hex = this.uintToHex(value);
       }
-    } else if (type.match(Constants.REGEX_BYTES)) { // fixed bytes, ie. bytes32
+    } else if (type.match(Constants.REGEX_BYTES)) {
+      // fixed bytes, ie. bytes32
       hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
-    } else if (type.match(Constants.REGEX_STATIC_BYTES_ARRAY)) { // fixed bytes array, ie. bytes32[10]
+    } else if (type.match(Constants.REGEX_STATIC_BYTES_ARRAY)) {
+      // fixed bytes array, ie. bytes32[10]
       const arrCapacity = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
       if (value instanceof Array) {
         hex = this.stringArrayToHex(value, arrCapacity);
@@ -321,15 +325,17 @@ class Encoder {
 
       if (type === Constants.STRING) {
         console.info(`${type} will be fource to fixed bytes`);
-        const strLength = args[index].length;
-        type = `bytes(${strLength})`;
+        let strLength = args[index].length;
+        if (strLength > 32) strLength = 32;
+        type = `bytes${strLength}`;
       }
 
       if (type === Constants.BYTES) {
         throw Error('dynamics bytes conversion not implemented.');
       } else if (type === Constants.STRING) {
         throw Error('dynamic string conversion not implemented.');
-      } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) { // dynamic types
+      } else if (type.match(Constants.REGEX_DYNAMIC_ARRAY)) {
+        // dynamic types
         let data = '';
 
         // set location of dynamic data
@@ -353,12 +359,15 @@ class Encoder {
         // increment starting data location
         // +1 for the length of data set
         dataLoc += numOfDynItems + 1;
-      } else if (type === Constants.ADDRESS
-        || type === Constants.BOOL
-        || type.match(Constants.REGEX_UINT)
-        || type.match(Constants.REGEX_INT)
-        || type.match(Constants.REGEX_BYTES)
-        || type.match(Constants.REGEX_STATIC_ARRAY)) { // static types
+      } else if (
+        type === Constants.ADDRESS ||
+        type === Constants.BOOL ||
+        type.match(Constants.REGEX_UINT) ||
+        type.match(Constants.REGEX_INT) ||
+        type.match(Constants.REGEX_BYTES) ||
+        type.match(Constants.REGEX_STATIC_ARRAY)
+      ) {
+        // static types
         dataHexArr[index] = this.encodeParam(type, args[index]);
       } else {
         console.error(`Found unknown type: ${type}`);
