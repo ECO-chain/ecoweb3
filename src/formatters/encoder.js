@@ -316,8 +316,13 @@ class Encoder {
     });
 
     _.each(methodObj.inputs, (item, index) => {
-      const { type } = item;
+      let { type } = item;
       let hex;
+
+      if (type === Constants.STRING) {
+        console.error(`${type} will be fource to fixed bytes`);
+        type = Constants.REGEX_BYTES;
+      }
 
       if (type === Constants.BYTES) {
         throw Error('dynamics bytes conversion not implemented.');

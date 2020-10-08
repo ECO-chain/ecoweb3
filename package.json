@@ -14,7 +14,7 @@
   },
   "engines": {
     "node": "9.3.0",
-    "npm": "5.5.1"
+    "npm": "6.10.0"
   },
   "dependencies": {
     "axios": "^0.18.0",
