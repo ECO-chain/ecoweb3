@@ -320,8 +320,9 @@ class Encoder {
       let hex;
 
       if (type === Constants.STRING) {
-        console.error(`${type} will be fource to fixed bytes`);
-        type = Constants.REGEX_BYTES;
+        console.info(`${type} will be fource to fixed bytes`);
+        const strLength = args[index].length;
+        type = `bytes(${strLength})`;
       }
 
       if (type === Constants.BYTES) {
