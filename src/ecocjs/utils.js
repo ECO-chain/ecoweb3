@@ -36,8 +36,7 @@ function hex2Buffer(hexString) {
   const buffer = [];
   let i;
   for (i = 0; i < hexString.length; i += 2) {
-    buffer[buffer.length] =
-      (parseInt(hexString[i], 16) << 4) | parseInt(hexString[i + 1], 16); // eslint-disable-line no-bitwise
+    buffer[buffer.length] = (parseInt(hexString[i], 16) << 4) | parseInt(hexString[i + 1], 16); // eslint-disable-line no-bitwise
   }
   return Buffer.from(buffer);
 }
@@ -75,10 +74,7 @@ function selectTxs(unspentTransactions, amount, fee) {
   const immatureList = [];
   let i;
   for (i = 0; i < unspentTransactions.length; i++) {
-    if (
-      unspentTransactions[i].confirmations >= 1875 ||
-      unspentTransactions[i].isStake === false
-    ) {
+    if (unspentTransactions[i].confirmations >= 1875 || unspentTransactions[i].isStake === false) {
       matureList[matureList.length] = unspentTransactions[i];
     } else {
       immatureList[immatureList.length] = unspentTransactions[i];
@@ -90,9 +86,7 @@ function selectTxs(unspentTransactions, amount, fee) {
   unspentTransactions = matureList.concat(immatureList);
 
   /* compute total balance */
-  const value = new BigNumber(amount)
-    .plus(fee)
-    .times(1e8); /* add fee and add 8 digits to total */
+  const value = new BigNumber(amount).plus(fee).times(1e8); /* add fee and add 8 digits to total */
   const find = [];
   let findTotal = new BigNumber(0); /* current balance */
   for (i = 0; i < unspentTransactions.length; i++) {
@@ -106,6 +100,20 @@ function selectTxs(unspentTransactions, amount, fee) {
   }
 
   return find;
+}
+
+/**
+ * This is a function for get ECOC address from keypair
+ *
+ * @param keypair
+ * @returns address
+ */
+function getAddress(keypair) {
+  const { address } = bitcoinjs.payments.p2pkh({
+    pubkey: keypair.publicKey,
+    network: keypair.network,
+  });
+  return address;
 }
 
 /**
@@ -157,21 +165,14 @@ function buildPubKeyHashTransaction(keyPair, to, amount, fee, utxoList) {
  * @param [transaction] utxoList
  * @returns String the built tx
  */
-function buildCreateContractTransaction(
-  keyPair,
-  code,
-  gasLimit,
-  gasPrice,
-  fee,
-  utxoList,
-) {
+function buildCreateContractTransaction(keyPair, code, gasLimit, gasPrice, fee, utxoList) {
   const from = keyPair.getplusress();
   const amount = 0;
   const totalFee = new BigNumber(gasLimit)
     .times(gasPrice)
-    .div(1e8)
-    .plus(fee)
+    .div(1e8).plus(fee)
     .toNumber();
+
   const inputs = selectTxs(utxoList, amount, totalFee);
   const tx = new bitcoinjs.TransactionBuilder(keyPair.network);
   let totalValue = new BigNumber(0);
@@ -232,6 +233,7 @@ function buildSendToContractTransaction(
     .div(1e8)
     .plus(fee)
     .toNumber();
+
   const inputs = selectTxs(utxoList, amount, totalFee);
   const tx = new bitcoinjs.TransactionBuilder(keyPair.network);
   let totalValue = new BigNumber(0);
@@ -281,14 +283,7 @@ function generateTx(fromAddress, toAddress, network, params, utxoList) {
   return tx;
 }
 
-function generateSendToTx(
-  fromAddress,
-  contractAddress,
-  encodedData,
-  network,
-  params,
-  utxoList,
-) {
+function generateSendToTx(fromAddress, contractAddress, encodedData, network, params, utxoList) {
   const { amount, gasLimit, gasPrice, fee } = params;
   const from = fromAddress;
   const totalFee = new BigNumber(gasLimit)
@@ -332,4 +327,5 @@ module.exports = {
   buildSendToContractTransaction,
   generateTx,
   generateSendToTx,
+  getAddress,
 };
