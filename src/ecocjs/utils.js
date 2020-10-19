@@ -294,8 +294,10 @@ function generateSendToTx(fromAddress, contractAddress, encodedData, network, pa
 
   const inputs = selectTxs(utxoList, amount, totalFee);
   const tx = new bitcoinjs.TransactionBuilder(network);
-  let totalValue = new BigNumber(0);
+  const value = new BigNumber(amount).times(1e8);
   const sendFee = new BigNumber(totalFee).times(1e8);
+
+  let totalValue = new BigNumber(0);
   let i;
   for (i = 0; i < inputs.length; i++) {
     tx.addInput(inputs[i].txid, inputs[i].vout);
@@ -311,9 +313,9 @@ function generateSendToTx(fromAddress, contractAddress, encodedData, network, pa
     OPS.OP_CALL,
   ]);
 
-  tx.addOutput(contract, amount);
+  tx.addOutput(contract, value.toNumber());
   if (totalValue.minus(sendFee).toNumber() > 0) {
-    tx.addOutput(from, totalValue.minus(sendFee).minus(amount).toNumber());
+    tx.addOutput(from, totalValue.minus(sendFee).minus(value).toNumber());
   }
 
   return tx;
