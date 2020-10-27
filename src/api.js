@@ -39,6 +39,10 @@ class API {
     return this.provider.get(`/txs/?address=${address}`);
   }
 
+  getTxInfo(txid) {
+    return this.provider.get(`/tx/${txid}`);
+  }
+
   sendRawTx(rawTx) {
     return this.provider.post('/tx/send', { rawtx: rawTx });
   }
