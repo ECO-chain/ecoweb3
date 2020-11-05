@@ -19,6 +19,10 @@ class API {
     }
   }
 
+  getBlockStatus() {
+    return this.provider.get('/sync');
+  }
+
   getUtxoList(address) {
     return this.provider.get(`/addrs/${address}/utxo`);
   }
