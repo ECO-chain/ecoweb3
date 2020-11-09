@@ -36,6 +36,28 @@ class ApiProvider {
 
     return response.data;
   }
+
+  async post(resource, data = {}) {
+    if (isEmpty(resource)) {
+      throw Error('resource cannot be empty.');
+    }
+
+    if (isEmpty(this.apiUrl)) {
+      throw Error('apiUrl need to be configured');
+    }
+
+    // Execute POST request
+    const response = await axios({
+      method: 'post',
+      url: `${this.apiUrl.href.replace(/([^:]\/)\/+/g, '')}${resource}`,
+      headers: {},
+      data,
+    }).catch((error) => {
+      throw Error(error);
+    });
+
+    return response.data;
+  }
 }
 
 module.exports = ApiProvider;

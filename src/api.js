@@ -19,8 +19,44 @@ class API {
     }
   }
 
+  getBlockStatus() {
+    return this.provider.get('/sync');
+  }
+
   getUtxoList(address) {
     return this.provider.get(`/addrs/${address}/utxo`);
+  }
+
+  getAddressInfo(address) {
+    return this.provider.get(`/addr/${address}`);
+  }
+
+  getEcrc20(address) {
+    return this.provider.get(`/ecrc20/balances?balanceAddress=${address}`);
+  }
+
+  getTokenInfo(contractAddress) {
+    return this.provider.get(`/ecrc20/${contractAddress}`);
+  }
+
+  getTxList(address) {
+    return this.provider.get(`/txs/?address=${address}`);
+  }
+
+  getTxInfo(txid) {
+    return this.provider.get(`/tx/${txid}`);
+  }
+
+  sendRawTx(rawTx) {
+    return this.provider.post('/tx/send', { rawtx: rawTx });
+  }
+
+  fetchRawTx(txid) {
+    return this.provider.get(`/rawtx/${txid}`);
+  }
+
+  callContract(address, encodedData) {
+    return this.provider.get(`/contracts/${address}/hash/${encodedData}/call`);
   }
 }
 
