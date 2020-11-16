@@ -170,6 +170,14 @@ class Decoder {
     }
     return output;
   }
+
+  static hexToUtf8(hex) {
+    if (hex.startsWith('0x')) {
+      Web3Utils.hexToUtf8(hex);
+    }
+
+    return Web3Utils.hexToUtf8(Utils.appendHexPrefix(hex));
+  }
 }
 
 module.exports = Decoder;
