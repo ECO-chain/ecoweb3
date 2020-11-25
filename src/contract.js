@@ -6,7 +6,7 @@ const Txs = require('./ecocjs/utils');
 
 const DEFAULT_AMOUNT = 0;
 const DEFAULT_GAS_LIMIT = 250000;
-const DEFAULT_GAS_PRICE = 0.0000004; // Unit: ECO
+const DEFAULT_GAS_PRICE = 0.0000004; // Unit: ECOC
 
 class Contract {
   /**
@@ -32,8 +32,13 @@ class Contract {
    */
   async call(methodName, params) {
     const { methodArgs, senderAddress } = params;
+    const sender = senderAddress || '';
     const data = Encoder.constructData(this.abi, methodName, methodArgs);
-    let result = await this.rpcProvider.rawCall('callcontract', [this.address, data, senderAddress]);
+    let result = await this.rpcProvider.rawCall('callcontract', [
+      this.address,
+      data,
+      sender,
+    ]);
     result = Decoder.decodeCall(result, this.abi, methodName, true); // Format the result
     return result;
   }
@@ -48,11 +53,22 @@ class Contract {
     // Throw if methodArgs or senderAddress is not defined in params
     Utils.paramsCheck('send', params, ['methodArgs', 'senderAddress']);
 
-    const { methodArgs, amount, gasLimit, gasPrice, senderAddress } = params;
+    const {
+      methodArgs,
+      amount,
+      gasLimit,
+      gasPrice,
+      senderAddress,
+      broadcast,
+      changeToSender,
+    } = params;
+
     const data = Encoder.constructData(this.abi, methodName, methodArgs);
     const amt = amount || this.amount;
     const limit = gasLimit || this.gasLimit;
     const price = gasPrice || this.gasPrice;
+    const isBroadcast = broadcast || true;
+    const isChangeToSender = changeToSender || false;
 
     const result = await this.rpcProvider.rawCall('sendtocontract', [
       this.address,
@@ -61,6 +77,8 @@ class Contract {
       limit,
       price.toFixed(8),
       senderAddress,
+      isBroadcast,
+      isChangeToSender,
     ]);
 
     // Add original request params to result obj
@@ -82,7 +100,15 @@ class Contract {
     const limit = gasLimit || this.gasLimit;
     const price = gasPrice || this.gasPrice;
 
-    const tx = Txs.buildSendToContractTransaction(keypair, contractAddress, encodedData, limit, price * 1e8, amt, utxoList);
+    const tx = Txs.buildSendToContractTransaction(
+      keypair,
+      contractAddress,
+      encodedData,
+      limit,
+      price * 1e8,
+      amt,
+      utxoList,
+    );
 
     return tx;
   }
