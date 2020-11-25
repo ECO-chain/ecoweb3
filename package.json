@@ -1,7 +1,7 @@
 {
   "name": "ecoweb3",
   "namespace": "ecoc",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Ecochain JavaScript SDK",
   "main": "./src/index.js",
   "repository": {
@@ -25,6 +25,7 @@
     "chai": "^4.1.2",
     "create-hash": "^1.2.0",
     "dotenv": "^6.0.0",
+    "eslint-config-airbnb": "^18.2.1",
     "ethjs-abi": "^0.2.1",
     "js-beautify": "^1.8.1",
     "lodash": "^4.17.13",

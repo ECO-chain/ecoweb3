@@ -39,8 +39,8 @@ class API {
     return this.provider.get(`/ecrc20/${contractAddress}`);
   }
 
-  getTxList(address) {
-    return this.provider.get(`/txs/?address=${address}`);
+  getTxList(address, pageNum = 0) {
+    return this.provider.get(`/txs/?address=${address}&pageNum=${pageNum}`);
   }
 
   getTxInfo(txid) {
