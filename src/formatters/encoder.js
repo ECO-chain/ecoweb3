@@ -240,6 +240,9 @@ class Encoder {
     } else if (type.match(Constants.REGEX_BYTES)) {
       // fixed bytes, ie. bytes32
       hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
+    } else if (type.match(Constants.REGEX_BYTES_ARRAY)) {
+      // fixed bytes[], ie. bytes32[]
+      hex = this.stringToHex(value, Constants.MAX_HEX_CHARS_PER_BYTE);
     } else if (type.match(Constants.REGEX_STATIC_BYTES_ARRAY)) {
       // fixed bytes array, ie. bytes32[10]
       const arrCapacity = _.toNumber(type.match(Constants.REGEX_NUMBER)[1]);
