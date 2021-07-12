@@ -58,6 +58,14 @@ class API {
   callContract(address, encodedData) {
     return this.provider.get(`/contracts/${address}/hash/${encodedData}/call`);
   }
+
+  getBlockHash(height) {
+    return this.provider.get(`/block-index/${height}/`);
+  }
+
+  getBlockInfo(blockHash) {
+    return this.provider.get(`/block/${blockHash}`);
+  }
 }
 
 module.exports = API;
